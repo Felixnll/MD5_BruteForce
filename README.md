@@ -20,3 +20,12 @@ and use these hashcodes for testing before using assignements hashcode ( just to
 * bf6871d4fdbe9c0955bf304eaa06c640
 * 821f40e6beabbc20876d3e0e9ed2bef7
 * 6766f4262b2c600eddcf5461c7e9938a
+  263a6fee6029b304bd1cf5ce0a782c6b
+
+  //---------------------------------
+
+* 263a6fee6029b304bd1cf5ce0a782c6b
+* 77aaa4dcce557f10d97b3ed037de33fb
+* 9d64f0e38b080d131c1a27140df4e13b
+* e76b29d2dfffb1a327d49a797d34c8a7
+* f7808b86b6e53a97313f24a3619fdc95
