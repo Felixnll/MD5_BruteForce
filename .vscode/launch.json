@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "MD5 Brute Force - Main_Server",
+            "request": "launch",
+            "mainClass": "MD5_BruteForce.Main_Server",
+            "preLaunchTask": "build-java",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "stopOnEntry": false,
+            "internalConsoleOptions": "neverOpen"
+        }
+    ]
+}

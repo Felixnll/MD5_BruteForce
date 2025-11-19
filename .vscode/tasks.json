@@ -1,0 +1,29 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build-java",
+            "type": "shell",
+            "command": "javac",
+            "args": [
+                "-d",
+                "target/classes",
+                "src/main/java/MD5_BruteForce/*.java"
+            ],
+            "isBackground": false,
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "^(.*):(\\d+): error: (.*)$",
+                    "file": 1,
+                    "location": 2,
+                    "message": 3
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "^javac",
+                    "endsPattern": "^\\s*$"
+                }
+            }
+        }
+    ]
+}

@@ -29,3 +29,4 @@ and use these hashcodes for testing before using assignements hashcode ( just to
 * 9d64f0e38b080d131c1a27140df4e13b
 * e76b29d2dfffb1a327d49a797d34c8a7
 * f7808b86b6e53a97313f24a3619fdc95
+* $input = "f7808b86b6e53a97313f24a3619fdc95`n10"; $input | & 'C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\java.exe' -cp target\classes MD5_BruteForce.Main_Server
