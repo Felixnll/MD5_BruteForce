@@ -29,8 +29,20 @@ public class SearchCoordinator {
         return found.get();
     }
 
+    public static String getFoundPassword() {
+        return foundPassword;
+    }
+
+    public static int getFoundThreadId() {
+        return foundThreadId;
+    }
+
+    public static int getFoundServer() {
+        return foundServer;
+    }
+
     public static void reportFound(String password, int threadId, int server) {
-        // Ensure only the first reporter wins
+        
         if (found.compareAndSet(false, true)) {
             foundPassword = password;
             foundThreadId = threadId;
@@ -39,7 +51,7 @@ public class SearchCoordinator {
             double totalSec = (end - startTimeNano) / 1_000_000_000.0;
             System.out.println("Password found : " + password + " by Thread " + threadId + " on Server " + server);
             System.out.printf("Time : %.6f seconds (%.6f minutes)%n", totalSec, totalSec / 60.0);
-            // Stop all threads/servers
+            
             Server1.stop_threads();
             Server2.stop_threads();
         }

@@ -1,46 +1,54 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "build-java",
-            "type": "shell",
-            "command": "javac",
-            "args": [
-                "-d",
-                "target/classes",
-                "src/main/java/MD5_BruteForce/*.java"
-            ],
-            "isBackground": false,
-            "problemMatcher": {
-                "pattern": {
-                    "regexp": "^(.*):(\\d+): error: (.*)$",
-                    "file": 1,
-                    "location": 2,
-                    "message": 3
-                },
-                "background": {
-                    "activeOnStart": true,
-                    "beginsPattern": "^javac",
-                    "endsPattern": "^\\s*$"
-                }
-            }
-        },
-        {
-            "label": "run-Main_Server",
-            "type": "shell",
-            "command": "java",
-            "args": [
-                "-cp",
-                "target/classes",
-                "MD5_BruteForce.Main_Server"
-            ],
-            "dependsOn": ["build-java"],
-            "isBackground": false,
-            "presentation": {
-                "reveal": "always",
-                "panel": "shared"
-            }
-        }
-    ]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build-java",
+      "type": "shell",
+      "command": "C:\\Program Files\\Eclipse Adoptium\\jdk-25.0.1.8-hotspot\\bin\\javac",
+      "args": [
+        "--release",
+        "8",
+        "-d",
+        "target/classes",
+        "src/main/java/MD5_BruteForce/*.java"
+      ],
+      "group": "build",
+      "isBackground": false
+    },
+    {
+      "label": "run-Main_Server-explicit-java",
+      "type": "shell",
+      "command": "C:\\Program Files\\Eclipse Adoptium\\jdk-25.0.1.8-hotspot\\bin\\java.exe",
+      "args": [
+        "-cp",
+        "${workspaceFolder}/target/classes",
+        "MD5_BruteForce.Main_Server"
+      ],
+      "dependsOn": "build-java",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "run-Main_Server",
+      "type": "shell",
+      "command": "java",
+      "args": [
+        "-cp",
+        "target/classes",
+        "MD5_BruteForce.Main_Server"
+      ],
+      "dependsOn": "build-java",
+      "isBackground": false,
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    }
+  ]
 }
 
