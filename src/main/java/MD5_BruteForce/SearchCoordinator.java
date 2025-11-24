@@ -2,12 +2,17 @@ package MD5_BruteForce;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * Coordinates the search across all threads
+ * Tracks whether password has been found and by which thread
+ */
 public class SearchCoordinator {
+    // Using AtomicBoolean for thread-safe flag
     private static final AtomicBoolean found = new AtomicBoolean(false);
-    private static volatile long startTimeNano = 0L;
-    private static volatile String foundPassword = null;
-    private static volatile int foundThreadId = -1;
-    private static volatile int foundServer = -1;
+    private static volatile long startTimeNano = 0L; // when search started
+    private static volatile String foundPassword = null; // the password that was found
+    private static volatile int foundThreadId = -1; // which thread found it
+    private static volatile int foundServer = -1; // which server found it
 
     public static void reset() {
         found.set(false);
@@ -41,8 +46,10 @@ public class SearchCoordinator {
         return foundServer;
     }
 
+    // Called by thread when it finds the password
     public static void reportFound(String password, int threadId, int server) {
-        
+        // Use compareAndSet to ensure only first thread reports
+        // This is atomic - only one thread will get true back
         if (found.compareAndSet(false, true)) {
             foundPassword = password;
             foundThreadId = threadId;
