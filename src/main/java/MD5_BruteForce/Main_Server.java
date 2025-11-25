@@ -5,8 +5,6 @@ import java.util.List;
 
 /**
  * Main server class for MD5 brute force attack
- * This was harder than I thought to implement...
- * @author Felix
  */
 public class Main_Server {
 	

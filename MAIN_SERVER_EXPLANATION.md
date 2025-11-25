@@ -111,21 +111,12 @@ while (true) {
 
 ### Why This is Important:
 
-✅ **Three-Level Validation**:
-1. **Null check**: Handles EOF gracefully
-2. **Format check**: `parseInt()` ensures it's a valid integer
-3. **Range check**: Must be 1-10 (reasonable for demo/testing)
+✅ **Four-Level Validation**:
 
-✅ **Exception Handling**:
-```java
-try {
-    totalThreads = Integer.parseInt(threadsLine);
-} catch (NumberFormatException nfe) {
-    // User entered "abc" or "1.5" or similar
-    System.err.println("Error: Invalid number format...");
-    continue;  // Re-prompt instead of crash
-}
-```
+1. **Null Check** - Handles EOF (Ctrl+D/Ctrl+Z), exits gracefully
+2. **Format Check** - `parseInt()` validates it's a valid integer
+3. **Range Check** - Ensures threads are 1-10 (prevents system overload)
+4. **Exception Handling** - Catches `NumberFormatException` for invalid formats (e.g., "abc", "5.5"), re-prompts instead of crash
 
 ✅ **User-Friendly Constraints**:
 - Minimum 1 thread (at least one worker)
@@ -233,286 +224,84 @@ if (threadsServer2 > 0) {
 ```java
 // Wait for all threads to finish
 List<Thread> joinList = new java.util.ArrayList<>();
-// Collect all threads from both servers
 joinList.addAll(Server1.threads);
 joinList.addAll(Server2.threads);
-// Join all threads (wait for them to complete)
 for (Thread t : joinList) {
     try {
-        t.join();  // this blocks until thread finishes
+        t.join();  // Wait until thread finishes
     } catch (InterruptedException e) {
-        // Handle interruption properly
         Thread.currentThread().interrupt();
     }
 }
-
-System.out.println();
 System.out.println("Search finished.");
 ```
 
-### Why This is Important:
+### For Canva Presentation:
 
-✅ **Thread.join() - Waiting for Completion**:
-```java
-t.join();  // Main thread waits here until thread t finishes
-```
-- Blocks the main thread until worker thread completes
-- Ensures all threads finish before displaying "Search finished"
-- Without this, program would exit while threads still running
+**What is Thread.join()?**
+- Main thread **waits** until all worker threads complete
+- Prevents "Search finished" from displaying too early
+- Like waiting for all students to finish exam before collecting papers
 
-**Flow Diagram:**
-```
-Main Thread                     Worker Threads
-     │                          ├─ Thread 1 (searching...)
-     │                          ├─ Thread 2 (searching...)
-     ├─ Start threads           ├─ Thread 3 (searching...)
-     │                          └─ Thread 4 (searching...)
-     ├─ Call t.join() ──────────→ (waiting for all to finish)
-     │   (blocked here)         
-     │                          Thread 2 finds password!
-     │                          └─ Exits
-     │                          Other threads see stop flag
-     │                          └─ All exit
-     ← All threads done ─────────┘
-     │
-     ├─ "Search finished"
-```
+**Three Steps:**
 
-✅ **Proper Interrupt Handling**:
-```java
-catch (InterruptedException e) {
-    Thread.currentThread().interrupt();  // Restore interrupt status
-}
-```
-- If main thread interrupted, preserves the interrupt flag
-- Allows graceful handling of Ctrl+C or similar signals
-- Best practice for thread interruption
+1. **Collect Threads**
+   - Gather all threads from Server1 and Server2 into one list
+   - Ensures we wait for ALL workers (e.g., 8 threads total)
 
-✅ **Collecting Threads from Both Servers**:
-```java
-joinList.addAll(Server1.threads);
-joinList.addAll(Server2.threads);
-```
-- Ensures we wait for ALL threads regardless of which server they belong to
-- Handles asymmetric thread distribution (e.g., 5 on Server1, 3 on Server2)
+2. **Wait for Completion**
+   - Call `join()` on each thread
+   - Main thread **blocks** (freezes) until that thread finishes
+   - Repeats for all threads in the list
+
+3. **Display Result**
+   - Only after ALL threads done → Print "Search finished"
+   - Guarantees correct timing and output
+
+**Why This Matters:**
+- ❌ Without join: Program exits while threads still working
+- ✅ With join: Clean synchronization and accurate results
+
+**Real Example:**
+- Time 0s: Start 8 threads
+- Time 5s: Main calls join() → WAITS
+- Time 10s: Password found, threads exit
+- Time 12s: Main unblocked → "Search finished" ✓
 
 ---
 
-## 5. Re-Run Prompt and Loop Control
+## 5. User Experience - Multi-Run & Exit Handling
 
-**Lines 106-133**
+### Re-Run Loop + Input Re-validation + Exit Handler
 
-```java
-// Ask if user wants to search another hash
-while (true) {
-    System.out.print("Run another hash? (Y (Yes)/N (No)) ");
-    String resp = sc.nextLine();
-    if (resp == null) {  // EOF or ctrl+d
-        System.out.println();
-        System.out.println("No input detected. Exiting.");
-        waitForExit(sc);
-        sc.close();
-        return;
-    }
-    resp = resp.trim();  // clean up the response
-    // Check if user wants to exit
-    if (resp.isEmpty() || resp.equalsIgnoreCase("n") || resp.equalsIgnoreCase("no")) {
-        System.out.println("Exiting program.");
-        waitForExit(sc);
-        sc.close();
-        return;
-    }
-    // If they said yes, continue to get new hash
-    if (resp.equalsIgnoreCase("y") || resp.equalsIgnoreCase("yes")) {
-        break;  // exit this loop, continue to get new hash
-    }
-    // Invalid response, ask again
-    System.out.println("Please answer 'y' or 'n'.");
-}
+**Purpose:** Allow users to test multiple hashes without restarting the program
+
+**Key Features:**
+
+1. **Multi-Run Capability**
+   - Asks: "Run another hash? (Y/N)"
+   - Accepts: y, yes, n, no, Enter (case-insensitive)
+   - Invalid input → Re-prompts with guidance
+
+2. **Input Re-validation**
+   - New hash: Same 32-char hex validation as initial input
+   - New thread count: Same 1-10 range validation
+   - Maintains consistency and robustness across multiple runs
+
+3. **Exit Handler (waitForExit)**
+   - Prevents console window from closing immediately (Windows)
+   - User can review results before exit
+   - Multiple exit options: Enter, "exit", or Ctrl+D
+
+**Benefits:**
+- ✅ No restart needed for performance testing
+- ✅ Compare different thread counts easily
+- ✅ Professional user experience
+- ✅ Time to review/screenshot results
+
+**Example Flow:**
 ```
-
-### Why This is Important:
-
-✅ **Interactive Multi-Run Feature**:
-- Allows testing multiple hashes without restarting program
-- Saves time (no need to recompile or restart JVM)
-- Professional user experience
-
-✅ **Flexible Input Handling**:
-```java
-resp.equalsIgnoreCase("y")     // accepts: y, Y
-resp.equalsIgnoreCase("yes")   // accepts: yes, Yes, YES
-resp.equalsIgnoreCase("n")     // accepts: n, N
-resp.equalsIgnoreCase("no")    // accepts: no, No, NO
-resp.isEmpty()                 // accepts: just pressing Enter = exit
-```
-
-✅ **Re-Prompt on Invalid Input**:
-```java
-System.out.println("Please answer 'y' or 'n'.");
-// Loop continues, asks again
-```
-- Doesn't crash on typos
-- Clear guidance to user
-
-**User Experience Flow:**
-```
-Search finished.
-Run another hash? (Y (Yes)/N (No)) maybe
-Please answer 'y' or 'n'.
-Run another hash? (Y (Yes)/N (No)) y
-
-Enter the hashcode --> [user enters new hash]
-```
-
----
-
-## 6. Subsequent Hash Input (Re-Run Loop)
-
-**Lines 135-151**
-
-```java
-// Get the new hash to search
-String newHash;
-while (true) {
-    System.out.print("Enter the hashcode --> ");
-    newHash = sc.nextLine();
-    if (newHash == null) {
-        System.out.println();
-        System.out.println("No input detected. Exiting.");
-        waitForExit(sc);
-        sc.close();
-        return;
-    }
-    newHash = newHash.trim();
-    if (newHash.length() == 32 && newHash.matches("[0-9a-fA-F]{32}")) {
-        break;
-    }
-    System.err.println("Error: Invalid MD5 hash format. MD5 hashes must be 32 hexadecimal characters. Please try again.");
-}
-hashcode = newHash;  // update the hashcode for next iteration
-```
-
-### Why This is Important:
-
-✅ **Same Validation as Initial Input**:
-- Ensures consistency across multiple runs
-- Prevents invalid hashes in subsequent searches
-- User experience remains predictable
-
-✅ **Variable Update**:
-```java
-hashcode = newHash;
-```
-- Updates the `hashcode` variable for the next loop iteration
-- Next search will use this new hash
-
-✅ **Full Re-Validation**:
-- Doesn't assume user will be more careful on 2nd+ input
-- Same strict validation every time
-- Maintains robustness
-
----
-
-## 7. Subsequent Thread Count Input (Re-Run Loop)
-
-**Lines 153-173**
-
-```java
-// Get new thread count for next search
-while (true) {
-    System.out.print("Enter the total number of threads to use (1-10) --> ");
-    String threadsLine = sc.nextLine();
-    if (threadsLine == null) {
-        System.out.println();
-        System.out.println("No input detected. Exiting.");
-        waitForExit(sc);
-        sc.close();
-        return;
-    }
-    threadsLine = threadsLine.trim();
-    try {
-        totalThreads = Integer.parseInt(threadsLine);
-    } catch (NumberFormatException nfe) {
-        System.err.println("Error: Invalid number format for total threads. Please try again.");
-        continue;
-    }
-    if (totalThreads < 1 || totalThreads > 10) {
-        System.err.println("Error: Number of threads must be between 1 and 10 (inclusive). Please try again.");
-        continue;
-    }
-    break;
-}
-```
-
-### Why This is Important:
-
-✅ **Allows Performance Testing**:
-- User can try same hash with different thread counts
-- Compare 1 thread vs 5 threads vs 10 threads
-- Empirical performance analysis
-
-✅ **Same Validation Logic**:
-- Identical to initial thread count input
-- Consistency and robustness maintained
-
-**Example Testing Scenario:**
-```
-Run 1: 5f4dcc3b... with 1 thread  → Time: 10 seconds
-Run 2: 5f4dcc3b... with 5 threads → Time: 2.5 seconds
-Run 3: 5f4dcc3b... with 10 threads → Time: 1.8 seconds
-→ User observes diminishing returns after 5 threads
-```
-
----
-
-## 8. Exit Handler - Wait for User
-
-**Lines 178-191**
-
-```java
-private static void waitForExit(Scanner sc) {
-    System.out.println();
-    System.out.println("Press Enter to quit.");
-    // Keep waiting until user presses enter
-    while (true) {
-        String line = sc.nextLine();
-        if (line == null) break;  // EOF
-        line = line.trim();
-        if (line.isEmpty() || line.equalsIgnoreCase("exit")) break;  // exit conditions
-        System.out.println("Type 'exit' or press Enter to quit.");
-    }
-}
-```
-
-### Why This is Important:
-
-✅ **Prevents Console Window from Closing**:
-- On Windows, console windows close immediately when program exits
-- User can't read results if window disappears instantly
-- `waitForExit()` keeps window open until user ready
-
-✅ **Graceful Termination**:
-- User has time to read final results
-- Can take screenshots or copy output
-- Professional user experience
-
-✅ **Multiple Exit Options**:
-```java
-line.isEmpty()              // Just press Enter
-line.equalsIgnoreCase("exit")  // Type "exit"
-line == null                // Ctrl+D (EOF)
-```
-
-**User Experience:**
-```
-Search finished.
-Run another hash? (Y (Yes)/N (No)) n
-Exiting program.
-
-Press Enter to quit.
-[User reviews results, then presses Enter]
-[Program exits]
+Search 1 → "Run another?" → Yes → Search 2 → "Run another?" → No → Exit
 ```
 
 ---

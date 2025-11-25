@@ -47,7 +47,8 @@ public class Search_Thread extends Thread{
 			char ca = (char) a; // convert to char to see what it looks like
 			char cb = (char) (b - 1);
 			this.setName("S" + server + "-T" + id); // set thread name for debugging
-			System.out.println("Thread " + id + " (Server " + server + ") assigned interval " + interval + " -> ascii [" + a + ".." + (b-1) + "] ('" + ca + "'..'" + cb + "')");
+			System.out.println
+			("Thread " + id + " (Server " + server + ") assigned interval " + interval + " -> ascii [" + a + ".." + (b-1) + "] ('" + ca + "'..'" + cb + "')");
 		} catch (Exception ex) {
 			// Ignore if interval format is wrong
 		}
@@ -95,7 +96,6 @@ public class Search_Thread extends Thread{
 	}
 	
 	// Helper method to convert hex string to byte array
-	// e.g., "5d41402abc4b2a76b9719d911017c592" -> byte array
 	private static byte[] hexStringToByteArray(String s) {
 		int len = s.length();
 		byte[] data = new byte[len / 2];
@@ -113,7 +113,13 @@ public class Search_Thread extends Thread{
 		for (int len = 1; len <= 6 && !SearchCoordinator.isFound() && !stop; len++) {
 			System.out.println("Thread " + id + " on Server " + server + " searching length " + len);
 			// Process this length using dynamic work distribution
-			processLengthDynamic(len, GlobalDistributor.START, GlobalDistributor.END, GlobalDistributor.BASE, GlobalDistributor.BASE_OFFSET, GlobalDistributor.CHUNK_SIZE, GlobalDistributor.counters, GlobalDistributor.totals);
+			processLengthDynamic(len, GlobalDistributor.START, 
+									GlobalDistributor.END, 
+									GlobalDistributor.BASE, 
+									GlobalDistributor.BASE_OFFSET, 
+									GlobalDistributor.CHUNK_SIZE, 
+									GlobalDistributor.counters, 
+									GlobalDistributor.totals);
 		}
 		// System.out.println("Thread " + id + " finished all lengths"); // debug
 	}
@@ -122,7 +128,15 @@ public class Search_Thread extends Thread{
 		SearchCoordinator.reportFound(password, id, server);
 	}
 
-	private void processLengthDynamic(int length, int serverStart, int serverEnd, int base, int baseOffset, int chunkSize, java.util.concurrent.atomic.AtomicLong[] countersArr, long[] totalsArr) {
+	private void processLengthDynamic(int length, 
+									int serverStart, 
+									int serverEnd, 
+									int base, 
+									int baseOffset, 
+									int chunkSize, 
+									java.util.concurrent.atomic.AtomicLong[] countersArr, 
+									long[] totalsArr)
+{
 		long total = totalsArr[length];
 		if (total <= 0) return;
 
