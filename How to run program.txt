@@ -1,0 +1,57 @@
+
+   MD5 BRUTEFORCE - RUNNING INSTRUCTIONS
+
+QUICK START - THREE WAYS TO RUN:
+
+METHOD 1: Using Batch File 
+-------------------------------------
+1. Double-click "run-main-server.bat"
+2. Program will automatically compile and run
+3. Enter the MD5 hash 
+4. Enter number of threads 
+5. Program will search for the password
+
+METHOD 2: Using JAR File
+-------------------------
+1. Double-click "run-jar.bat"
+2. Follow the same prompts as Method 1
+
+METHOD 3: Manual Compilation (If batch files don't work)
+---------------------------------------------------------
+1. Open Command Prompt in the project folder
+2. Compile:
+   javac -d target/classes src/main/java/MD5_BruteForce/*.java
+
+3. Run:
+   java -cp target/classes MD5_BruteForce.Main_Server
+
+4. Follow the prompts
+
+Group 3 MD5 hash
+* 2-Char Password: 263a6fee6029b304bd1cf5ce0a782c6b
+* 3-Char Password: 77aaa4dcce557f10d97b3ed037de33fb
+* 4-Char Password: 9d64f0e38b080d131c1a27140df4e13b
+* 5-Char Password: e76b29d2dfffb1a327d49a797d34c8a7
+* 6-Char Password: f7808b86b6e53a97313f24a3619fdc95
+
+WHAT TO EXPECT:
+
+- Program splits work between Server1 (ASCII 33-79) and Server2 (ASCII 80-126)
+- Searches passwords from length 1 to 6 characters
+- Shows which thread found the password
+- Displays time taken to crack
+
+Source Code:
+-Main_Server.java (Entry point)
+-GlobalDistributor.java
+-SearchCoordinator.java
+-Server1.java
+-Server2.java
+-Search_Thread.java
+
+Executable Files:
+- run-main-server.bat (Build and run)
+- build.bat (Compile only)
+- run-jar.bat (Run from JAR)
+- MD5BruteForce.jar (Pre-compiled)
+
