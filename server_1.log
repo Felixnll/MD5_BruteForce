@@ -1,24 +1,28 @@
-[2025-12-29 14:07:26.163] ========================================
-[2025-12-29 14:07:26.167] Server Log Initialized: Server_1
-[2025-12-29 14:07:26.168] Log File: server_1.log
-[2025-12-29 14:07:26.168] ========================================
-[2025-12-29 14:07:26.168] SERVER STARTED
-[2025-12-29 14:07:26.169] RMI Service registered and ready
-[2025-12-29 14:07:38.734] Received search request: SearchConfig[hash=263a6fee..., length=2, servers=2, serverIdx=0, threads=2]
-[2025-12-29 14:07:38.736] ----------------------------------------
-[2025-12-29 14:07:38.737] SEARCH STARTED
-[2025-12-29 14:07:38.737] Target Hash: 263a6fee6029b304bd1cf5ce0a782c6b
-[2025-12-29 14:07:38.737] Password Length: 2
-[2025-12-29 14:07:38.738] Threads Created: 2
-[2025-12-29 14:07:38.738] Server range: Range[0 - 4418] (size: 4418)
-[2025-12-29 14:07:38.738] Thread-0 assigned range: [0 - 2209] (size: 2209)
-[2025-12-29 14:07:38.740] Thread-1 assigned range: [2209 - 4418] (size: 2209)
-[2025-12-29 14:07:38.740] Thread-0 STARTED searching
-[2025-12-29 14:07:38.740] Thread-1 STARTED searching
-[2025-12-29 14:07:38.826] Thread-0 STOPPED - Range exhausted, not found
-[2025-12-29 14:07:38.827] Thread-1 STOPPED - Range exhausted, not found
-[2025-12-29 14:07:38.829] Search completed in 94 ms
-[2025-12-29 14:07:38.829] Password NOT found in assigned range
-[2025-12-29 14:07:38.830] Search completed: SearchResult[NOT FOUND by Server_1 in 94ms]
-[2025-12-29 14:07:38.834] Stop search requested
-[2025-12-29 14:07:38.835] Stopping all worker threads...
+[2025-12-29 15:10:30.594] ========================================
+[2025-12-29 15:10:30.598] Server Log Initialized: Server_1
+[2025-12-29 15:10:30.598] Log File: server_1.log
+[2025-12-29 15:10:30.598] ========================================
+[2025-12-29 15:10:30.599] SERVER STARTED
+[2025-12-29 15:10:30.599] RMI Service registered and ready
+[2025-12-29 15:11:16.177] Received search request: SearchConfig[hash=77aaa4dc..., length=3, servers=2, serverIdx=0, threads=2]
+[2025-12-29 15:11:16.180] ----------------------------------------
+[2025-12-29 15:11:16.181] SEARCH STARTED
+[2025-12-29 15:11:16.181] Target Hash: 77aaa4dcce557f10d97b3ed037de33fb
+[2025-12-29 15:11:16.181] Password Length: 3
+[2025-12-29 15:11:16.182] Threads Created: 2
+[2025-12-29 15:11:16.182] Server range: Range[0 - 415292] (size: 415292)
+[2025-12-29 15:11:16.182] Thread-0 assigned range: [0 - 207646] (size: 207646)
+[2025-12-29 15:11:16.183] Thread-1 assigned range: [207646 - 415292] (size: 207646)
+[2025-12-29 15:11:16.184] Thread-0 STARTED searching
+[2025-12-29 15:11:16.184] Thread-1 STARTED searching
+[2025-12-29 15:11:16.481] Stopping all worker threads...
+[2025-12-29 15:11:16.482] Thread-0 STOPPED - Stopped by coordinator
+[2025-12-29 15:11:16.482] ========================================
+[2025-12-29 15:11:16.483] PASSWORD FOUND!
+[2025-12-29 15:11:16.483] Found by: Thread-1
+[2025-12-29 15:11:16.484] Password: =hA
+[2025-12-29 15:11:16.485] Time taken: 297 ms
+[2025-12-29 15:11:16.485] ========================================
+[2025-12-29 15:11:16.486] Search completed: SearchResult[FOUND: '=hA' by Server_1 Thread-1 in 309ms]
+[2025-12-29 15:11:16.492] Stop search requested
+[2025-12-29 15:11:16.492] Stopping all worker threads...

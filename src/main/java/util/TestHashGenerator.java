@@ -7,10 +7,10 @@ package util;
 public class TestHashGenerator {
     
     public static void main(String[] args) {
-        System.out.println("╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║              MD5 HASH GENERATOR FOR TESTING                  ║");
-        System.out.println("║       Character Set: ASCII 33-126 (94 characters)            ║");
-        System.out.println("╚══════════════════════════════════════════════════════════════╝");
+        System.out.println("+--------------------------------------------------------------+");
+        System.out.println("|              MD5 HASH GENERATOR FOR TESTING                  |");
+        System.out.println("|       Character Set: ASCII 33-126 (94 characters)            |");
+        System.out.println("+--------------------------------------------------------------+");
         System.out.println();
         
         System.out.println("Character Set Used:");
@@ -28,18 +28,18 @@ public class TestHashGenerator {
             "Pass!@",    // 6 characters with special
         };
         
-        System.out.println("Password → MD5 Hash");
-        System.out.println("════════════════════════════════════════════════════════════════");
+        System.out.println("Password -> MD5 Hash");
+        System.out.println("================================================================");
         
         for (String password : testPasswords) {
             String hash = MD5Util.md5(password);
-            System.out.printf("%-10s → %s%n", password, hash);
+            System.out.printf("%-10s -> %s%n", password, hash);
         }
         
         System.out.println();
-        System.out.println("════════════════════════════════════════════════════════════════");
+        System.out.println("================================================================");
         System.out.println("GROUP 3 TARGET HASHES TO CRACK:");
-        System.out.println("════════════════════════════════════════════════════════════════");
+        System.out.println("================================================================");
         System.out.println("2-char: 263a6fee6029b304bd1cf5ce0a782c6b");
         System.out.println("3-char: 77aaa4dcce557f10d97b3ed037de33fb");
         System.out.println("4-char: 9d64f0e38b080d131c1a27140df4e13b");
@@ -48,7 +48,7 @@ public class TestHashGenerator {
         System.out.println();
         
         System.out.println("Search Space Sizes:");
-        System.out.println("════════════════════════════════════════════════════════════════");
+        System.out.println("================================================================");
         for (int len = 1; len <= 6; len++) {
             long space = MD5Util.calculateSearchSpace(len);
             System.out.printf("Length %d: %,15d combinations%n", len, space);

@@ -106,14 +106,14 @@ public class BruteForceClient {
             
             // Connection failed - show options
             System.out.println();
-            System.out.println("════════════════════════════════════════════════════════════════");
+            System.out.println("================================================================");
             System.out.println("  CONNECTION FAILED!");
-            System.out.println("════════════════════════════════════════════════════════════════");
+            System.out.println("================================================================");
             System.out.println("  Make sure:");
             System.out.println("  1. Server(s) are running (start-server-1.bat, etc.)");
             System.out.println("  2. Firewall is open (run open-firewall.bat as Admin)");
             System.out.println("  3. IP address is correct");
-            System.out.println("════════════════════════════════════════════════════════════════");
+            System.out.println("================================================================");
             System.out.println();
             System.out.println("Options:");
             System.out.println("  [R] Retry connection");
@@ -152,14 +152,14 @@ public class BruteForceClient {
      * Print the application banner
      */
     private void printBanner() {
-        System.out.println("╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║     DISTRIBUTED MD5 BRUTE-FORCE PASSWORD CRACKER             ║");
-        System.out.println("║                    TMN4013 Assignment 2                      ║");
-        System.out.println("╠══════════════════════════════════════════════════════════════╣");
-        System.out.println("║  Character Set: ASCII 33-126 (94 printable characters)       ║");
-        System.out.println("║  Includes: A-Z, a-z, 0-9, and special characters             ║");
-        System.out.println("║  Supports: 1-2 servers, multiple threads per server          ║");
-        System.out.println("╚══════════════════════════════════════════════════════════════╝");
+        System.out.println("+--------------------------------------------------------------+");
+        System.out.println("|     DISTRIBUTED MD5 BRUTE-FORCE PASSWORD CRACKER             |");
+        System.out.println("|                    TMN4013 Assignment 2                      |");
+        System.out.println("+--------------------------------------------------------------+");
+        System.out.println("|  Character Set: ASCII 33-126 (94 printable characters)       |");
+        System.out.println("|  Includes: A-Z, a-z, 0-9, and special characters             |");
+        System.out.println("|  Supports: 1-2 servers, multiple threads per server          |");
+        System.out.println("+--------------------------------------------------------------+");
         System.out.println();
     }
     
@@ -253,14 +253,14 @@ public class BruteForceClient {
      */
     private void displayConfiguration(String hash, int length, int numServers, int threads) {
         System.out.println();
-        System.out.println("════════════════════════════════════════════════════════════════");
+        System.out.println("================================================================");
         System.out.println("SEARCH CONFIGURATION:");
         System.out.println("  Target Hash:        " + hash);
         System.out.println("  Password Length:    " + length);
         System.out.println("  Number of Servers:  " + numServers);
         System.out.println("  Threads per Server: " + threads);
         System.out.println("  Total Threads:      " + (numServers * threads));
-        System.out.println("════════════════════════════════════════════════════════════════");
+        System.out.println("================================================================");
         System.out.println();
     }
     
@@ -328,7 +328,7 @@ public class BruteForceClient {
                                                    int numServers, int threadsPerServer) {
         System.out.println();
         System.out.println("Starting distributed search...");
-        System.out.println("════════════════════════════════════════════════════════════════");
+        System.out.println("================================================================");
         
         long startTime = System.currentTimeMillis();
         executor = Executors.newFixedThreadPool(numServers);
@@ -414,23 +414,23 @@ public class BruteForceClient {
      */
     private void displayResults(SearchResult result) {
         System.out.println();
-        System.out.println("╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║                        SEARCH RESULTS                        ║");
-        System.out.println("╠══════════════════════════════════════════════════════════════╣");
+        System.out.println("+--------------------------------------------------------------+");
+        System.out.println("|                        SEARCH RESULTS                        |");
+        System.out.println("+--------------------------------------------------------------+");
         
         if (result.isFound()) {
-            System.out.println("║  Status:       PASSWORD FOUND!                               ║");
-            System.out.printf("║  Password:     %-46s ║%n", result.getPassword());
-            System.out.printf("║  Found by:     %s, Thread-%d%-27s ║%n", 
+            System.out.println("|  Status:       PASSWORD FOUND!                               |");
+            System.out.printf("|  Password:     %-46s |%n", result.getPassword());
+            System.out.printf("|  Found by:     %s, Thread-%d%-27s |%n", 
                     result.getServerName(), result.getThreadId(), "");
-            System.out.printf("║  Time taken:   %,d ms%-38s ║%n", result.getSearchTimeMs(), "");
+            System.out.printf("|  Time taken:   %,d ms%-38s |%n", result.getSearchTimeMs(), "");
         } else {
-            System.out.println("║  Status:       PASSWORD NOT FOUND                            ║");
-            System.out.printf("║  Time taken:   %,d ms%-38s ║%n", result.getSearchTimeMs(), "");
-            System.out.println("║  Note: Password may not be in the search space              ║");
+            System.out.println("|  Status:       PASSWORD NOT FOUND                            |");
+            System.out.printf("|  Time taken:   %,d ms%-38s |%n", result.getSearchTimeMs(), "");
+            System.out.println("|  Note: Password may not be in the search space              |");
         }
         
-        System.out.println("╚══════════════════════════════════════════════════════════════╝");
+        System.out.println("+--------------------------------------------------------------+");
     }
     
     /**

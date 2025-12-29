@@ -57,16 +57,16 @@ public class RMIServer {
             String serviceName = SERVICE_NAME_PREFIX + serverIndex;
             registry.rebind(serviceName, service);
             
-            System.out.println("════════════════════════════════════════════════════════════════");
+            System.out.println("================================================================");
             System.out.println("  RMI Server " + serverIndex + " is ready!");
-            System.out.println("════════════════════════════════════════════════════════════════");
+            System.out.println("================================================================");
             System.out.println("  Service Name: " + serviceName);
             System.out.println("  RMI Port:     " + RMI_PORT);
             System.out.println("  Local IP:     " + localIP);
-            System.out.println("════════════════════════════════════════════════════════════════");
+            System.out.println("================================================================");
             System.out.println("  FOR REMOTE CLIENTS:");
             System.out.println("  Enter this IP: " + localIP);
-            System.out.println("════════════════════════════════════════════════════════════════");
+            System.out.println("================================================================");
             System.out.println("Press Ctrl+C to shutdown...");
             
             // Add shutdown hook
