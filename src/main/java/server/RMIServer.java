@@ -1,5 +1,6 @@
 package server;
 
+import java.net.InetAddress;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
@@ -7,6 +8,7 @@ import java.rmi.server.UnicastRemoteObject;
 /**
  * RMIServer - Main entry point for starting RMI servers
  * Can start one or multiple servers on different ports
+ * Supports both local and remote connections
  */
 public class RMIServer {
     
@@ -33,6 +35,12 @@ public class RMIServer {
         try {
             System.out.println("Starting RMI Server " + serverIndex + "...");
             
+            // Get the local IP address for remote connections
+            String localIP = InetAddress.getLocalHost().getHostAddress();
+            
+            // Set the RMI server hostname so clients can connect remotely
+            System.setProperty("java.rmi.server.hostname", localIP);
+            
             // Create the service implementation
             service = new BruteForceServiceImpl(serverIndex);
             
@@ -49,11 +57,16 @@ public class RMIServer {
             String serviceName = SERVICE_NAME_PREFIX + serverIndex;
             registry.rebind(serviceName, service);
             
-            System.out.println("========================================");
-            System.out.println("RMI Server " + serverIndex + " is ready!");
-            System.out.println("Service registered as: " + serviceName);
-            System.out.println("RMI Port: " + RMI_PORT);
-            System.out.println("========================================");
+            System.out.println("════════════════════════════════════════════════════════════════");
+            System.out.println("  RMI Server " + serverIndex + " is ready!");
+            System.out.println("════════════════════════════════════════════════════════════════");
+            System.out.println("  Service Name: " + serviceName);
+            System.out.println("  RMI Port:     " + RMI_PORT);
+            System.out.println("  Local IP:     " + localIP);
+            System.out.println("════════════════════════════════════════════════════════════════");
+            System.out.println("  FOR REMOTE CLIENTS:");
+            System.out.println("  Enter this IP: " + localIP);
+            System.out.println("════════════════════════════════════════════════════════════════");
             System.out.println("Press Ctrl+C to shutdown...");
             
             // Add shutdown hook
@@ -107,8 +120,8 @@ public class RMIServer {
         if (args.length > 0) {
             try {
                 serverIndex = Integer.parseInt(args[0]);
-                if (serverIndex < 1 || serverIndex > 2) {
-                    System.err.println("Server index must be 1 or 2");
+                if (serverIndex < 1 || serverIndex > 10) {
+                    System.err.println("Server index must be between 1 and 10");
                     System.exit(1);
                 }
             } catch (NumberFormatException e) {

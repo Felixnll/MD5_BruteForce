@@ -21,7 +21,7 @@ import java.util.concurrent.Future;
  */
 public class BruteForceClient {
     
-    private static final String RMI_HOST = "localhost";
+    private String rmiHost = "localhost";
     private final Scanner scanner;
     private List<BruteForceService> servers;
     private ExecutorService executor;
@@ -37,34 +37,115 @@ public class BruteForceClient {
     public void run() {
         printBanner();
         
-        try {
-            // Get user input
-            String targetHash = getTargetHash();
-            int passwordLength = getPasswordLength();
-            int numServers = getNumberOfServers();
-            int threadsPerServer = getThreadsPerServer();
-            
-            // Display configuration
-            displayConfiguration(targetHash, passwordLength, numServers, threadsPerServer);
-            
-            // Connect to servers
-            if (!connectToServers(numServers)) {
-                System.err.println("Failed to connect to required servers. Exiting.");
-                return;
+        boolean keepRunning = true;
+        
+        while (keepRunning) {
+            try {
+                // Get server host address
+                rmiHost = getServerHost();
+                
+                // Get user input
+                String targetHash = getTargetHash();
+                int passwordLength = getPasswordLength();
+                int numServers = getNumberOfServers();
+                int threadsPerServer = getThreadsPerServer();
+                
+                // Display configuration
+                displayConfiguration(targetHash, passwordLength, numServers, threadsPerServer);
+                
+                // Connect to servers with retry option
+                if (!connectToServersWithRetry(numServers)) {
+                    // User chose to exit
+                    keepRunning = askToContinue();
+                    continue;
+                }
+                
+                // Start the distributed search
+                SearchResult result = executeDistributedSearch(targetHash, passwordLength, 
+                        numServers, threadsPerServer);
+                
+                // Display results
+                displayResults(result);
+                
+                // Ask if user wants to crack another hash
+                keepRunning = askToContinue();
+                
+            } catch (Exception e) {
+                System.err.println("\n[ERROR] " + e.getMessage());
+                e.printStackTrace();
+                keepRunning = askToContinue();
+            } finally {
+                // Clear servers list for next run
+                servers.clear();
+            }
+        }
+        
+        System.out.println("\nThank you for using MD5 Brute-Force Cracker!");
+        cleanup();
+    }
+    
+    /**
+     * Ask user if they want to continue
+     */
+    private boolean askToContinue() {
+        System.out.println();
+        System.out.print("Do you want to try again? (y/n): ");
+        String answer = scanner.nextLine().trim().toLowerCase();
+        System.out.println();
+        return answer.equals("y") || answer.equals("yes");
+    }
+    
+    /**
+     * Connect to servers with retry option
+     */
+    private boolean connectToServersWithRetry(int numServers) {
+        while (true) {
+            if (connectToServers(numServers)) {
+                return true;
             }
             
-            // Start the distributed search
-            SearchResult result = executeDistributedSearch(targetHash, passwordLength, 
-                    numServers, threadsPerServer);
+            // Connection failed - show options
+            System.out.println();
+            System.out.println("════════════════════════════════════════════════════════════════");
+            System.out.println("  CONNECTION FAILED!");
+            System.out.println("════════════════════════════════════════════════════════════════");
+            System.out.println("  Make sure:");
+            System.out.println("  1. Server(s) are running (start-server-1.bat, etc.)");
+            System.out.println("  2. Firewall is open (run open-firewall.bat as Admin)");
+            System.out.println("  3. IP address is correct");
+            System.out.println("════════════════════════════════════════════════════════════════");
+            System.out.println();
+            System.out.println("Options:");
+            System.out.println("  [R] Retry connection");
+            System.out.println("  [C] Change server IP address");
+            System.out.println("  [Q] Quit to main menu");
+            System.out.println();
+            System.out.print("Enter choice (R/C/Q): ");
             
-            // Display results
-            displayResults(result);
+            String choice = scanner.nextLine().trim().toLowerCase();
             
-        } catch (Exception e) {
-            System.err.println("Error: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            cleanup();
+            switch (choice) {
+                case "r":
+                case "retry":
+                    System.out.println("Retrying connection...\n");
+                    servers.clear();
+                    break;
+                case "c":
+                case "change":
+                    System.out.print("Enter new server IP address: ");
+                    rmiHost = scanner.nextLine().trim();
+                    if (rmiHost.isEmpty()) {
+                        rmiHost = "localhost";
+                    }
+                    System.out.println("  -> Changed to: " + rmiHost + "\n");
+                    servers.clear();
+                    break;
+                case "q":
+                case "quit":
+                    return false;
+                default:
+                    System.out.println("Invalid choice. Please enter R, C, or Q.\n");
+            }
         }
     }
     
@@ -76,10 +157,24 @@ public class BruteForceClient {
         System.out.println("║     DISTRIBUTED MD5 BRUTE-FORCE PASSWORD CRACKER             ║");
         System.out.println("║                    TMN4013 Assignment 2                      ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
-        System.out.println("║  Character Set: a-z, 0-9 (36 characters)                     ║");
+        System.out.println("║  Character Set: ASCII 33-126 (94 printable characters)       ║");
+        System.out.println("║  Includes: A-Z, a-z, 0-9, and special characters             ║");
         System.out.println("║  Supports: 1-2 servers, multiple threads per server          ║");
         System.out.println("╚══════════════════════════════════════════════════════════════╝");
         System.out.println();
+    }
+    
+    /**
+     * Get server host address from user
+     */
+    private String getServerHost() {
+        System.out.print("Enter server IP address (press Enter for localhost): ");
+        String host = scanner.nextLine().trim();
+        if (host.isEmpty()) {
+            host = "localhost";
+        }
+        System.out.println("  -> Connecting to: " + host);
+        return host;
     }
     
     /**
@@ -174,10 +269,10 @@ public class BruteForceClient {
      * Connect to RMI servers
      */
     private boolean connectToServers(int numServers) {
-        System.out.println("Connecting to RMI servers...");
+        System.out.println("Connecting to RMI servers at " + rmiHost + "...");
         
         try {
-            Registry registry = LocateRegistry.getRegistry(RMI_HOST, RMIServer.RMI_PORT);
+            Registry registry = LocateRegistry.getRegistry(rmiHost, RMIServer.RMI_PORT);
             
             for (int i = 1; i <= numServers; i++) {
                 String serviceName = RMIServer.SERVICE_NAME_PREFIX + i;
@@ -191,11 +286,22 @@ public class BruteForceClient {
                         servers.add(service);
                         System.out.println("OK (" + service.getServerName() + ")");
                     } else {
-                        System.out.println("FAILED (not responding)");
+                        System.out.println("FAILED (server not responding)");
                         return false;
                     }
+                } catch (java.rmi.ConnectException e) {
+                    System.out.println("FAILED");
+                    System.out.println("    [!] Server " + i + " is DOWN or unreachable");
+                    System.out.println("    [!] Make sure start-server-" + i + ".bat is running");
+                    return false;
+                } catch (java.rmi.NotBoundException e) {
+                    System.out.println("FAILED");
+                    System.out.println("    [!] Server " + i + " is not registered");
+                    System.out.println("    [!] The server might still be starting up");
+                    return false;
                 } catch (Exception e) {
-                    System.out.println("FAILED (" + e.getMessage() + ")");
+                    System.out.println("FAILED");
+                    System.out.println("    [!] Error: " + e.getClass().getSimpleName() + " - " + e.getMessage());
                     return false;
                 }
             }
@@ -203,8 +309,14 @@ public class BruteForceClient {
             System.out.println("  All servers connected successfully!");
             return true;
             
+        } catch (java.rmi.ConnectException e) {
+            System.out.println();
+            System.out.println("  [!] Cannot connect to " + rmiHost + ":" + RMIServer.RMI_PORT);
+            System.out.println("  [!] The server machine may be offline or firewall is blocking");
+            return false;
         } catch (Exception e) {
-            System.err.println("Failed to connect to RMI registry: " + e.getMessage());
+            System.out.println();
+            System.out.println("  [!] Connection error: " + e.getMessage());
             return false;
         }
     }
@@ -328,7 +440,7 @@ public class BruteForceClient {
         if (executor != null && !executor.isShutdown()) {
             executor.shutdownNow();
         }
-        scanner.close();
+        // Don't close scanner here - it's closed when program exits
     }
     
     /**
@@ -337,5 +449,6 @@ public class BruteForceClient {
     public static void main(String[] args) {
         BruteForceClient client = new BruteForceClient();
         client.run();
+        client.scanner.close();
     }
 }

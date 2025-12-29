@@ -18,9 +18,20 @@ public class MD5Util {
         }
     });
     
-    // Character set for password generation (lowercase letters and digits)
-    public static final String CHARSET = "abcdefghijklmnopqrstuvwxyz0123456789";
-    public static final int CHARSET_SIZE = CHARSET.length();
+    // Character set for password generation (ASCII 33-126: all printable characters)
+    // Includes: !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
+    public static final String CHARSET;
+    public static final int CHARSET_SIZE;
+    
+    static {
+        // Build character set from ASCII 33 to 126 (94 printable characters)
+        StringBuilder sb = new StringBuilder();
+        for (int i = 33; i <= 126; i++) {
+            sb.append((char) i);
+        }
+        CHARSET = sb.toString();
+        CHARSET_SIZE = CHARSET.length(); // 94 characters
+    }
     
     /**
      * Generate MD5 hash of a string
