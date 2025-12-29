@@ -235,13 +235,13 @@ public class BruteForceClient {
      */
     private int getThreadsPerServer() {
         while (true) {
-            System.out.print("Enter threads per server (1-16): ");
+            System.out.print("Enter threads per server (1-10): ");
             try {
                 int threads = Integer.parseInt(scanner.nextLine().trim());
-                if (threads >= 1 && threads <= 16) {
+                if (threads >= 1 && threads <= 10) {
                     return threads;
                 }
-                System.err.println("Threads per server must be between 1 and 16.");
+                System.err.println("Threads per server must be between 1 and 10.");
             } catch (NumberFormatException e) {
                 System.err.println("Please enter a valid number.");
             }
