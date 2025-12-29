@@ -127,8 +127,8 @@ public class BruteForceClient {
             switch (choice) {
                 case "r":
                 case "retry":
-                    System.out.println("Retrying connection...\n");
-                    servers.clear();
+                    System.out.println("\nRetrying connection...\n");
+                    // Connection will be retried in next loop iteration
                     break;
                 case "c":
                 case "change":
@@ -138,7 +138,6 @@ public class BruteForceClient {
                         rmiHost = "localhost";
                     }
                     System.out.println("  -> Changed to: " + rmiHost + "\n");
-                    servers.clear();
                     break;
                 case "q":
                 case "quit":
@@ -271,54 +270,55 @@ public class BruteForceClient {
     private boolean connectToServers(int numServers) {
         System.out.println("Connecting to RMI servers at " + rmiHost + "...");
         
-        try {
-            Registry registry = LocateRegistry.getRegistry(rmiHost, RMIServer.RMI_PORT);
+        // Clear any existing connections
+        servers.clear();
+        
+        for (int i = 1; i <= numServers; i++) {
+            String serviceName = RMIServer.SERVICE_NAME_PREFIX + i;
+            System.out.print("  Connecting to " + serviceName + "... ");
             
-            for (int i = 1; i <= numServers; i++) {
-                String serviceName = RMIServer.SERVICE_NAME_PREFIX + i;
-                System.out.print("  Connecting to " + serviceName + "... ");
+            try {
+                // Get fresh registry reference each time to avoid caching issues
+                Registry registry = LocateRegistry.getRegistry(rmiHost, RMIServer.RMI_PORT);
+                BruteForceService service = (BruteForceService) registry.lookup(serviceName);
                 
-                try {
-                    BruteForceService service = (BruteForceService) registry.lookup(serviceName);
-                    
-                    // Test connection
-                    if (service.isAlive()) {
-                        servers.add(service);
-                        System.out.println("OK (" + service.getServerName() + ")");
-                    } else {
-                        System.out.println("FAILED (server not responding)");
-                        return false;
-                    }
-                } catch (java.rmi.ConnectException e) {
-                    System.out.println("FAILED");
-                    System.out.println("    [!] Server " + i + " is DOWN or unreachable");
-                    System.out.println("    [!] Make sure start-server-" + i + ".bat is running");
-                    return false;
-                } catch (java.rmi.NotBoundException e) {
-                    System.out.println("FAILED");
-                    System.out.println("    [!] Server " + i + " is not registered");
-                    System.out.println("    [!] The server might still be starting up");
-                    return false;
-                } catch (Exception e) {
-                    System.out.println("FAILED");
-                    System.out.println("    [!] Error: " + e.getClass().getSimpleName() + " - " + e.getMessage());
+                // Test connection with actual call
+                if (service.isAlive()) {
+                    servers.add(service);
+                    System.out.println("OK (" + service.getServerName() + ")");
+                } else {
+                    System.out.println("FAILED (server not responding)");
+                    servers.clear();
                     return false;
                 }
+            } catch (java.rmi.ConnectException e) {
+                System.out.println("FAILED");
+                System.out.println("    [!] Server " + i + " is DOWN or unreachable");
+                System.out.println("    [!] Make sure start-server-" + i + ".bat is running on " + rmiHost);
+                servers.clear();
+                return false;
+            } catch (java.rmi.NotBoundException e) {
+                System.out.println("FAILED");
+                System.out.println("    [!] Server " + i + " is not registered in RMI registry");
+                System.out.println("    [!] The server might still be starting up - wait a few seconds");
+                servers.clear();
+                return false;
+            } catch (java.rmi.RemoteException e) {
+                System.out.println("FAILED");
+                System.out.println("    [!] RMI connection error: " + e.getMessage());
+                System.out.println("    [!] Check if server is running and firewall is open");
+                servers.clear();
+                return false;
+            } catch (Exception e) {
+                System.out.println("FAILED");
+                System.out.println("    [!] Error: " + e.getClass().getSimpleName() + " - " + e.getMessage());
+                servers.clear();
+                return false;
             }
-            
-            System.out.println("  All servers connected successfully!");
-            return true;
-            
-        } catch (java.rmi.ConnectException e) {
-            System.out.println();
-            System.out.println("  [!] Cannot connect to " + rmiHost + ":" + RMIServer.RMI_PORT);
-            System.out.println("  [!] The server machine may be offline or firewall is blocking");
-            return false;
-        } catch (Exception e) {
-            System.out.println();
-            System.out.println("  [!] Connection error: " + e.getMessage());
-            return false;
         }
+        
+        System.out.println("  All " + numServers + " server(s) connected successfully!");
+        return true;
     }
     
     /**

@@ -1,6 +1,24 @@
-[2025-12-29 13:56:10.172] ========================================
-[2025-12-29 13:56:10.175] Server Log Initialized: Server_1
-[2025-12-29 13:56:10.175] Log File: server_1.log
-[2025-12-29 13:56:10.175] ========================================
-[2025-12-29 13:56:10.175] SERVER STARTED
-[2025-12-29 13:56:10.176] RMI Service registered and ready
+[2025-12-29 14:02:53.702] ========================================
+[2025-12-29 14:02:53.705] Server Log Initialized: Server_1
+[2025-12-29 14:02:53.705] Log File: server_1.log
+[2025-12-29 14:02:53.705] ========================================
+[2025-12-29 14:02:53.705] SERVER STARTED
+[2025-12-29 14:02:53.706] RMI Service registered and ready
+[2025-12-29 14:03:04.470] Received search request: SearchConfig[hash=263a6fee..., length=2, servers=2, serverIdx=0, threads=2]
+[2025-12-29 14:03:04.472] ----------------------------------------
+[2025-12-29 14:03:04.472] SEARCH STARTED
+[2025-12-29 14:03:04.473] Target Hash: 263a6fee6029b304bd1cf5ce0a782c6b
+[2025-12-29 14:03:04.473] Password Length: 2
+[2025-12-29 14:03:04.473] Threads Created: 2
+[2025-12-29 14:03:04.473] Server range: Range[0 - 4418] (size: 4418)
+[2025-12-29 14:03:04.474] Thread-0 assigned range: [0 - 2209] (size: 2209)
+[2025-12-29 14:03:04.476] Thread-1 assigned range: [2209 - 4418] (size: 2209)
+[2025-12-29 14:03:04.477] Thread-0 STARTED searching
+[2025-12-29 14:03:04.477] Thread-1 STARTED searching
+[2025-12-29 14:03:04.555] Thread-0 STOPPED - Range exhausted, not found
+[2025-12-29 14:03:04.559] Thread-1 STOPPED - Range exhausted, not found
+[2025-12-29 14:03:04.560] Search completed in 89 ms
+[2025-12-29 14:03:04.560] Password NOT found in assigned range
+[2025-12-29 14:03:04.561] Search completed: SearchResult[NOT FOUND by Server_1 in 89ms]
+[2025-12-29 14:03:04.564] Stop search requested
+[2025-12-29 14:03:04.565] Stopping all worker threads...
