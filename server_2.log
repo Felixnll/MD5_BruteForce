@@ -1,6 +1,52 @@
-[2025-12-30 15:21:25.800] ========================================
-[2025-12-30 15:21:25.803] Server Log Initialized: Server_2
-[2025-12-30 15:21:25.804] Log File: server_2.log
-[2025-12-30 15:21:25.804] ========================================
-[2025-12-30 15:21:25.804] SERVER STARTED
-[2025-12-30 15:21:25.805] RMI Service registered and ready
+[2025-12-30 15:46:47.657] ========================================
+[2025-12-30 15:46:47.660] Server Log Initialized: Server_2
+[2025-12-30 15:46:47.661] Log File: server_2.log
+[2025-12-30 15:46:47.661] ========================================
+[2025-12-30 15:46:47.661] SERVER STARTED
+[2025-12-30 15:46:47.662] RMI Service registered and ready
+[2025-12-30 15:47:31.866] Received search request: SearchConfig[hash=263a6fee..., length=2, servers=2, serverIdx=1, threads=10]
+[2025-12-30 15:47:31.869] ----------------------------------------
+[2025-12-30 15:47:31.870] SEARCH STARTED
+[2025-12-30 15:47:31.870] Target Hash: 263a6fee6029b304bd1cf5ce0a782c6b
+[2025-12-30 15:47:31.871] Password Length: 2
+[2025-12-30 15:47:31.871] Threads Created: 10
+[2025-12-30 15:47:31.871] Server range: Range[4418 - 8836] (size: 4418)
+[2025-12-30 15:47:31.871] Thread-0 assigned range: [4418 - 4860] (size: 442)
+[2025-12-30 15:47:31.873] Thread-1 assigned range: [4860 - 5302] (size: 442)
+[2025-12-30 15:47:31.873] Thread-2 assigned range: [5302 - 5744] (size: 442)
+[2025-12-30 15:47:31.873] Thread-3 assigned range: [5744 - 6186] (size: 442)
+[2025-12-30 15:47:31.873] Thread-4 assigned range: [6186 - 6628] (size: 442)
+[2025-12-30 15:47:31.874] Thread-5 assigned range: [6628 - 7070] (size: 442)
+[2025-12-30 15:47:31.874] Thread-6 assigned range: [7070 - 7512] (size: 442)
+[2025-12-30 15:47:31.874] Thread-7 assigned range: [7512 - 7954] (size: 442)
+[2025-12-30 15:47:31.875] Thread-8 assigned range: [7954 - 8395] (size: 441)
+[2025-12-30 15:47:31.875] Thread-9 assigned range: [8395 - 8836] (size: 441)
+[2025-12-30 15:47:31.876] Thread-0 STARTED searching
+[2025-12-30 15:47:31.876] Thread-1 STARTED searching
+[2025-12-30 15:47:31.877] Thread-2 STARTED searching
+[2025-12-30 15:47:31.877] Thread-5 STARTED searching
+[2025-12-30 15:47:31.877] Thread-4 STARTED searching
+[2025-12-30 15:47:31.877] Thread-3 STARTED searching
+[2025-12-30 15:47:31.878] Thread-6 STARTED searching
+[2025-12-30 15:47:31.938] Thread-7 STARTED searching
+[2025-12-30 15:47:31.941] Thread-8 STARTED searching
+[2025-12-30 15:47:31.952] Thread-9 STARTED searching
+[2025-12-30 15:47:31.953] Thread-6 STOPPED - Range exhausted, not found
+[2025-12-30 15:47:31.957] Thread-0 STOPPED - Range exhausted, not found
+[2025-12-30 15:47:31.961] Thread-4 STOPPED - Range exhausted, not found
+[2025-12-30 15:47:31.962] Thread-3 STOPPED - Range exhausted, not found
+[2025-12-30 15:47:31.962] Thread-5 STOPPED - Range exhausted, not found
+[2025-12-30 15:47:31.974] Thread-9 STOPPED - Range exhausted, not found
+[2025-12-30 15:47:31.979] Stopping all worker threads...
+[2025-12-30 15:47:31.979] Thread-7 STOPPED - Stopped by coordinator
+[2025-12-30 15:47:31.980] Thread-2 STOPPED - Stopped by coordinator
+[2025-12-30 15:47:31.980] Thread-8 STOPPED - Stopped by coordinator
+[2025-12-30 15:47:31.981] ========================================
+[2025-12-30 15:47:31.981] PASSWORD FOUND!
+[2025-12-30 15:47:31.982] Found by: Thread-1
+[2025-12-30 15:47:31.982] Password: X&
+[2025-12-30 15:47:31.984] Time taken: 102 ms
+[2025-12-30 15:47:31.984] ========================================
+[2025-12-30 15:47:31.986] Search completed: SearchResult[FOUND: 'X&' by Server_2 Thread-1 in 118ms]
+[2025-12-30 15:47:32.002] Stop search requested
+[2025-12-30 15:47:32.002] Stopping all worker threads...

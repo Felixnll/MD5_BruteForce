@@ -21,7 +21,7 @@ import java.util.concurrent.Future;
  */
 public class BruteForceClient {
     
-    private String rmiHost = "localhost";
+    private String[] serverHosts;  // Array of server IP addresses
     private final Scanner scanner;
     private List<BruteForceService> servers;
     private ExecutorService executor;
@@ -29,6 +29,7 @@ public class BruteForceClient {
     public BruteForceClient() {
         this.scanner = new Scanner(System.in);
         this.servers = new ArrayList<>();
+        this.serverHosts = new String[2];  // Support up to 2 servers
     }
     
     /**
@@ -41,13 +42,14 @@ public class BruteForceClient {
         
         while (keepRunning) {
             try {
-                // Get server host address
-                rmiHost = getServerHost();
-                
                 // Get user input
                 String targetHash = getTargetHash();
                 int passwordLength = getPasswordLength();
                 int numServers = getNumberOfServers();
+                
+                // Get IP address for EACH server
+                getServerHosts(numServers);
+                
                 int threadsPerServer = getThreadsPerServer();
                 
                 // Display configuration
@@ -110,14 +112,14 @@ public class BruteForceClient {
             System.out.println("  CONNECTION FAILED!");
             System.out.println("================================================================");
             System.out.println("  Make sure:");
-            System.out.println("  1. Server(s) are running (start-server-1.bat, etc.)");
-            System.out.println("  2. Firewall is open (run open-firewall.bat as Admin)");
-            System.out.println("  3. IP address is correct");
+            System.out.println("  1. Server(s) are running (start-server-1, etc.)");
+            System.out.println("  2. Firewall is open on server machines");
+            System.out.println("  3. IP addresses are correct");
             System.out.println("================================================================");
             System.out.println();
             System.out.println("Options:");
             System.out.println("  [R] Retry connection");
-            System.out.println("  [C] Change server IP address");
+            System.out.println("  [C] Change server IP addresses");
             System.out.println("  [Q] Quit to main menu");
             System.out.println();
             System.out.print("Enter choice (R/C/Q): ");
@@ -132,12 +134,8 @@ public class BruteForceClient {
                     break;
                 case "c":
                 case "change":
-                    System.out.print("Enter new server IP address: ");
-                    rmiHost = scanner.nextLine().trim();
-                    if (rmiHost.isEmpty()) {
-                        rmiHost = "localhost";
-                    }
-                    System.out.println("  -> Changed to: " + rmiHost + "\n");
+                    getServerHosts(numServers);
+                    System.out.println();
                     break;
                 case "q":
                 case "quit":
@@ -164,16 +162,23 @@ public class BruteForceClient {
     }
     
     /**
-     * Get server host address from user
+     * Get server host addresses from user (one IP per server)
      */
-    private String getServerHost() {
-        System.out.print("Enter server IP address (press Enter for localhost): ");
-        String host = scanner.nextLine().trim();
-        if (host.isEmpty()) {
-            host = "localhost";
+    private void getServerHosts(int numServers) {
+        System.out.println();
+        System.out.println("Enter IP address for each server:");
+        System.out.println("  (Press Enter for localhost, or type the server's IP)");
+        System.out.println();
+        
+        for (int i = 0; i < numServers; i++) {
+            System.out.print("  Server " + (i + 1) + " IP address: ");
+            String host = scanner.nextLine().trim();
+            if (host.isEmpty()) {
+                host = "localhost";
+            }
+            serverHosts[i] = host;
+            System.out.println("    -> Server " + (i + 1) + ": " + host);
         }
-        System.out.println("  -> Connecting to: " + host);
-        return host;
     }
     
     /**
@@ -258,6 +263,9 @@ public class BruteForceClient {
         System.out.println("  Target Hash:        " + hash);
         System.out.println("  Password Length:    " + length);
         System.out.println("  Number of Servers:  " + numServers);
+        for (int i = 0; i < numServers; i++) {
+            System.out.println("    Server " + (i + 1) + " IP:     " + serverHosts[i]);
+        }
         System.out.println("  Threads per Server: " + threads);
         System.out.println("  Total Threads:      " + (numServers * threads));
         System.out.println("================================================================");
@@ -265,21 +273,22 @@ public class BruteForceClient {
     }
     
     /**
-     * Connect to RMI servers
+     * Connect to RMI servers (each server can be on a different IP)
      */
     private boolean connectToServers(int numServers) {
-        System.out.println("Connecting to RMI servers at " + rmiHost + "...");
+        System.out.println("Connecting to RMI servers...");
         
         // Clear any existing connections
         servers.clear();
         
         for (int i = 1; i <= numServers; i++) {
+            String serverHost = serverHosts[i - 1];  // Get IP for this server
             String serviceName = RMIServer.SERVICE_NAME_PREFIX + i;
-            System.out.print("  Connecting to " + serviceName + "... ");
+            System.out.print("  Connecting to " + serviceName + " at " + serverHost + "... ");
             
             try {
-                // Get fresh registry reference each time to avoid caching issues
-                Registry registry = LocateRegistry.getRegistry(rmiHost, RMIServer.RMI_PORT);
+                // Get registry from this server's IP address
+                Registry registry = LocateRegistry.getRegistry(serverHost, RMIServer.RMI_PORT);
                 BruteForceService service = (BruteForceService) registry.lookup(serviceName);
                 
                 // Test connection with actual call
@@ -293,13 +302,13 @@ public class BruteForceClient {
                 }
             } catch (java.rmi.ConnectException e) {
                 System.out.println("FAILED");
-                System.out.println("    [!] Server " + i + " is DOWN or unreachable");
-                System.out.println("    [!] Make sure start-server-" + i + ".bat is running on " + rmiHost);
+                System.out.println("    [!] Server " + i + " is DOWN or unreachable at " + serverHost);
+                System.out.println("    [!] Make sure start-server-" + i + " is running on " + serverHost);
                 servers.clear();
                 return false;
             } catch (java.rmi.NotBoundException e) {
                 System.out.println("FAILED");
-                System.out.println("    [!] Server " + i + " is not registered in RMI registry");
+                System.out.println("    [!] Server " + i + " is not registered at " + serverHost);
                 System.out.println("    [!] The server might still be starting up - wait a few seconds");
                 servers.clear();
                 return false;
