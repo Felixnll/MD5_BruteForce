@@ -1,6 +1,9 @@
 package server;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
@@ -29,14 +32,52 @@ public class RMIServer {
     }
     
     /**
+     * Get the real network IP address (not localhost)
+     * Works correctly on both Windows and Linux
+     */
+    private String getNetworkIP() {
+        try {
+            // Try to find a real network interface IP
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface iface = interfaces.nextElement();
+                // Skip loopback and down interfaces
+                if (iface.isLoopback() || !iface.isUp()) {
+                    continue;
+                }
+                
+                Enumeration<InetAddress> addresses = iface.getInetAddresses();
+                while (addresses.hasMoreElements()) {
+                    InetAddress addr = addresses.nextElement();
+                    // Skip IPv6 and loopback
+                    if (addr.isLoopbackAddress() || addr.getHostAddress().contains(":")) {
+                        continue;
+                    }
+                    // Found a valid IPv4 address
+                    return addr.getHostAddress();
+                }
+            }
+        } catch (SocketException e) {
+            System.err.println("Warning: Could not enumerate network interfaces");
+        }
+        
+        // Fallback to getLocalHost
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (Exception e) {
+            return "127.0.0.1";
+        }
+    }
+    
+    /**
      * Start the RMI server and register the service
      */
     public void start() {
         try {
             System.out.println("Starting RMI Server " + serverIndex + "...");
             
-            // Get the local IP address for remote connections
-            String localIP = InetAddress.getLocalHost().getHostAddress();
+            // Get the real network IP address (works on Linux and Windows)
+            String localIP = getNetworkIP();
             
             // Set the RMI server hostname so clients can connect remotely
             System.setProperty("java.rmi.server.hostname", localIP);
