@@ -4,3 +4,34 @@
 [2025-12-30 13:39:40.937] ========================================
 [2025-12-30 13:39:40.937] SERVER STARTED
 [2025-12-30 13:39:40.938] RMI Service registered and ready
+[2025-12-30 13:40:45.292] Received search request: SearchConfig[hash=77aaa4dc..., length=3, servers=2, serverIdx=0, threads=5]
+[2025-12-30 13:40:45.294] ----------------------------------------
+[2025-12-30 13:40:45.295] SEARCH STARTED
+[2025-12-30 13:40:45.295] Target Hash: 77aaa4dcce557f10d97b3ed037de33fb
+[2025-12-30 13:40:45.295] Password Length: 3
+[2025-12-30 13:40:45.296] Threads Created: 5
+[2025-12-30 13:40:45.296] Server range: Range[0 - 415292] (size: 415292)
+[2025-12-30 13:40:45.297] Thread-0 assigned range: [0 - 83059] (size: 83059)
+[2025-12-30 13:40:45.298] Thread-1 assigned range: [83059 - 166118] (size: 83059)
+[2025-12-30 13:40:45.298] Thread-2 assigned range: [166118 - 249176] (size: 83058)
+[2025-12-30 13:40:45.299] Thread-3 assigned range: [249176 - 332234] (size: 83058)
+[2025-12-30 13:40:45.299] Thread-4 assigned range: [332234 - 415292] (size: 83058)
+[2025-12-30 13:40:45.300] Thread-0 STARTED searching
+[2025-12-30 13:40:45.300] Thread-1 STARTED searching
+[2025-12-30 13:40:45.300] Thread-2 STARTED searching
+[2025-12-30 13:40:45.300] Thread-4 STARTED searching
+[2025-12-30 13:40:45.300] Thread-3 STARTED searching
+[2025-12-30 13:40:45.496] Stopping all worker threads...
+[2025-12-30 13:40:45.497] Thread-0 STOPPED - Stopped by coordinator
+[2025-12-30 13:40:45.498] Thread-2 STOPPED - Stopped by coordinator
+[2025-12-30 13:40:45.499] Thread-4 STOPPED - Stopped by coordinator
+[2025-12-30 13:40:45.499] Thread-1 STOPPED - Stopped by coordinator
+[2025-12-30 13:40:45.500] ========================================
+[2025-12-30 13:40:45.500] PASSWORD FOUND!
+[2025-12-30 13:40:45.501] Found by: Thread-3
+[2025-12-30 13:40:45.501] Password: =hA
+[2025-12-30 13:40:45.503] Time taken: 195 ms
+[2025-12-30 13:40:45.504] ========================================
+[2025-12-30 13:40:45.505] Search completed: SearchResult[FOUND: '=hA' by Server_1 Thread-3 in 212ms]
+[2025-12-30 13:40:45.511] Stop search requested
+[2025-12-30 13:40:45.512] Stopping all worker threads...
