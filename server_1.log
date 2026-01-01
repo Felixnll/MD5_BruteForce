@@ -1,48 +1,102 @@
-[2025-12-30 15:46:43.884] ========================================
-[2025-12-30 15:46:43.888] Server Log Initialized: Server_1
-[2025-12-30 15:46:43.888] Log File: server_1.log
-[2025-12-30 15:46:43.888] ========================================
-[2025-12-30 15:46:43.888] SERVER STARTED
-[2025-12-30 15:46:43.888] RMI Service registered and ready
-[2025-12-30 15:47:31.866] Received search request: SearchConfig[hash=263a6fee..., length=2, servers=2, serverIdx=0, threads=10]
-[2025-12-30 15:47:31.870] ----------------------------------------
-[2025-12-30 15:47:31.870] SEARCH STARTED
-[2025-12-30 15:47:31.870] Target Hash: 263a6fee6029b304bd1cf5ce0a782c6b
-[2025-12-30 15:47:31.871] Password Length: 2
-[2025-12-30 15:47:31.871] Threads Created: 10
-[2025-12-30 15:47:31.871] Server range: Range[0 - 4418] (size: 4418)
-[2025-12-30 15:47:31.871] Thread-0 assigned range: [0 - 442] (size: 442)
-[2025-12-30 15:47:31.873] Thread-1 assigned range: [442 - 884] (size: 442)
-[2025-12-30 15:47:31.873] Thread-2 assigned range: [884 - 1326] (size: 442)
-[2025-12-30 15:47:31.873] Thread-3 assigned range: [1326 - 1768] (size: 442)
-[2025-12-30 15:47:31.874] Thread-4 assigned range: [1768 - 2210] (size: 442)
-[2025-12-30 15:47:31.874] Thread-5 assigned range: [2210 - 2652] (size: 442)
-[2025-12-30 15:47:31.874] Thread-6 assigned range: [2652 - 3094] (size: 442)
-[2025-12-30 15:47:31.875] Thread-7 assigned range: [3094 - 3536] (size: 442)
-[2025-12-30 15:47:31.875] Thread-8 assigned range: [3536 - 3977] (size: 441)
-[2025-12-30 15:47:31.875] Thread-9 assigned range: [3977 - 4418] (size: 441)
-[2025-12-30 15:47:31.876] Thread-2 STARTED searching
-[2025-12-30 15:47:31.877] Thread-0 STARTED searching
-[2025-12-30 15:47:31.877] Thread-3 STARTED searching
-[2025-12-30 15:47:31.877] Thread-1 STARTED searching
-[2025-12-30 15:47:31.877] Thread-6 STARTED searching
-[2025-12-30 15:47:31.878] Thread-5 STARTED searching
-[2025-12-30 15:47:31.936] Thread-1 STOPPED - Range exhausted, not found
-[2025-12-30 15:47:31.937] Thread-6 STOPPED - Range exhausted, not found
-[2025-12-30 15:47:31.942] Thread-4 STARTED searching
-[2025-12-30 15:47:31.953] Thread-7 STARTED searching
-[2025-12-30 15:47:31.953] Thread-8 STARTED searching
-[2025-12-30 15:47:31.960] Thread-9 STARTED searching
-[2025-12-30 15:47:31.961] Thread-2 STOPPED - Range exhausted, not found
-[2025-12-30 15:47:31.962] Thread-5 STOPPED - Range exhausted, not found
-[2025-12-30 15:47:31.966] Thread-8 STOPPED - Range exhausted, not found
-[2025-12-30 15:47:31.970] Thread-3 STOPPED - Range exhausted, not found
-[2025-12-30 15:47:31.971] Thread-7 STOPPED - Range exhausted, not found
-[2025-12-30 15:47:31.973] Thread-9 STOPPED - Range exhausted, not found
-[2025-12-30 15:47:31.988] Thread-4 STOPPED - Range exhausted, not found
-[2025-12-30 15:47:31.989] Thread-0 STOPPED - Range exhausted, not found
-[2025-12-30 15:47:31.991] Search completed in 124 ms
-[2025-12-30 15:47:31.992] Password NOT found in assigned range
-[2025-12-30 15:47:31.992] Search completed: SearchResult[NOT FOUND by Server_1 in 124ms]
-[2025-12-30 15:47:31.997] Stop search requested
-[2025-12-30 15:47:31.998] Stopping all worker threads...
+[2026-01-01 14:50:43.135] ========================================
+[2026-01-01 14:50:43.138] Server Log Initialized: Server_1
+[2026-01-01 14:50:43.139] Log File: server_1.log
+[2026-01-01 14:50:43.139] ========================================
+[2026-01-01 14:50:43.139] SERVER STARTED
+[2026-01-01 14:50:43.139] RMI Service registered and ready
+[2026-01-01 14:51:16.674] Received search request: SearchConfig[hash=e76b29d2..., length=5, servers=2, serverIdx=0, threads=10]
+[2026-01-01 14:51:16.677] ----------------------------------------
+[2026-01-01 14:51:16.677] SEARCH STARTED
+[2026-01-01 14:51:16.677] Target Hash: e76b29d2dfffb1a327d49a797d34c8a7
+[2026-01-01 14:51:16.678] Password Length: 5
+[2026-01-01 14:51:16.678] Threads Created: 10
+[2026-01-01 14:51:16.679] Server range: Range[0 - 3669520112] (size: 3669520112)
+[2026-01-01 14:51:16.679] Thread-0 assigned range: [0 - 366952012] (size: 366952012)
+[2026-01-01 14:51:16.681] Thread-1 assigned range: [366952012 - 733904024] (size: 366952012)
+[2026-01-01 14:51:16.681] Thread-2 assigned range: [733904024 - 1100856035] (size: 366952011)
+[2026-01-01 14:51:16.681] Thread-3 assigned range: [1100856035 - 1467808046] (size: 366952011)
+[2026-01-01 14:51:16.682] Thread-4 assigned range: [1467808046 - 1834760057] (size: 366952011)
+[2026-01-01 14:51:16.682] Thread-5 assigned range: [1834760057 - 2201712068] (size: 366952011)
+[2026-01-01 14:51:16.682] Thread-6 assigned range: [2201712068 - 2568664079] (size: 366952011)
+[2026-01-01 14:51:16.682] Thread-7 assigned range: [2568664079 - 2935616090] (size: 366952011)
+[2026-01-01 14:51:16.683] Thread-8 assigned range: [2935616090 - 3302568101] (size: 366952011)
+[2026-01-01 14:51:16.683] Thread-9 assigned range: [3302568101 - 3669520112] (size: 366952011)
+[2026-01-01 14:51:16.683] Thread-0 STARTED searching
+[2026-01-01 14:51:16.684] Thread-3 STARTED searching
+[2026-01-01 14:51:16.684] Thread-2 STARTED searching
+[2026-01-01 14:51:16.684] Thread-6 STARTED searching
+[2026-01-01 14:51:16.684] Thread-7 STARTED searching
+[2026-01-01 14:51:16.685] Thread-5 STARTED searching
+[2026-01-01 14:51:16.686] Thread-1 STARTED searching
+[2026-01-01 14:51:16.686] Thread-4 STARTED searching
+[2026-01-01 14:51:16.701] Thread-8 STARTED searching
+[2026-01-01 14:51:16.705] Thread-9 STARTED searching
+[2026-01-01 14:51:36.585] Thread-6: 13.63% done, 50,000,000 attempts, 2512563/sec, current: =o~rb
+[2026-01-01 14:51:36.617] Thread-1: 13.63% done, 50,000,000 attempts, 2508781/sec, current: &@~rb
+[2026-01-01 14:51:39.457] Thread-7: 13.63% done, 50,000,000 attempts, 2195582/sec, current: BSl'O
+[2026-01-01 14:51:39.622] Thread-4: 13.63% done, 50,000,000 attempts, 2180264/sec, current: 4JFM*
+[2026-01-01 14:51:39.647] Thread-0: 13.63% done, 50,000,000 attempts, 2177416/sec, current: !]3_t
+[2026-01-01 14:51:39.675] Thread-5: 13.63% done, 50,000,000 attempts, 2176089/sec, current: 9.3_u
+[2026-01-01 14:51:45.902] Thread-9: 13.63% done, 50,000,000 attempts, 1713268/sec, current: KyFM)
+[2026-01-01 14:51:45.938] Thread-2: 13.63% done, 50,000,000 attempts, 1710630/sec, current: +$l'P
+[2026-01-01 14:51:45.963] Thread-8: 13.63% done, 50,000,000 attempts, 1711274/sec, current: G7Y:<
+[2026-01-01 14:51:45.981] Thread-3: 13.63% done, 50,000,000 attempts, 1708759/sec, current: /fY:=
+[2026-01-01 14:51:55.025] Thread-5: 27.25% done, 100,000,000 attempts, 3254785/sec, current: 9jF@k
+[2026-01-01 14:51:55.043] Thread-4: 27.25% done, 100,000,000 attempts, 3243173/sec, current: 5(Y-~
+[2026-01-01 14:52:05.387] Thread-6: 27.25% done, 100,000,000 attempts, 1735991/sec, current: >N3SX
+[2026-01-01 14:52:05.414] Thread-1: 27.25% done, 100,000,000 attempts, 1737801/sec, current: &}3SX
+[2026-01-01 14:52:09.189] Thread-7: 27.25% done, 100,000,000 attempts, 1681690/sec, current: C1~fE
+[2026-01-01 14:52:09.489] Thread-0: 27.25% done, 100,000,000 attempts, 1675547/sec, current: ";F@j
+[2026-01-01 14:52:09.916] Thread-5: 40.88% done, 150,000,000 attempts, 3357958/sec, current: :HY!a
+[2026-01-01 14:52:09.931] Thread-4: 40.88% done, 150,000,000 attempts, 3359989/sec, current: 5dklt
+[2026-01-01 14:52:15.777] Thread-9: 27.25% done, 100,000,000 attempts, 1673696/sec, current: LWY-}
+[2026-01-01 14:52:15.807] Thread-8: 27.25% done, 100,000,000 attempts, 1673080/sec, current: Gsky2
+[2026-01-01 14:52:15.848] Thread-2: 27.25% done, 100,000,000 attempts, 1672129/sec, current: +`~fF
+[2026-01-01 14:52:15.883] Thread-3: 27.25% done, 100,000,000 attempts, 1670118/sec, current: 0Dky3
+[2026-01-01 14:52:25.778] Thread-1: 40.88% done, 150,000,000 attempts, 2452182/sec, current: '[F4N
+[2026-01-01 14:52:28.152] Thread-5: 54.50% done, 200,000,000 attempts, 2741679/sec, current: ;&k`W
+[2026-01-01 14:52:28.173] Thread-4: 54.50% done, 200,000,000 attempts, 2739126/sec, current: 6B~Mj
+[2026-01-01 14:52:33.281] Thread-6: 40.88% done, 150,000,000 attempts, 1792436/sec, current: ?,F4N
+[2026-01-01 14:52:37.177] Thread-7: 40.88% done, 150,000,000 attempts, 1786480/sec, current: Cn3G;
+[2026-01-01 14:52:37.516] Thread-0: 40.88% done, 150,000,000 attempts, 1783994/sec, current: "wY!`
+[2026-01-01 14:52:43.341] Thread-5: 68.13% done, 250,000,000 attempts, 3291856/sec, current: ;b~AM
+[2026-01-01 14:52:43.399] Thread-4: 68.13% done, 250,000,000 attempts, 3283857/sec, current: 7!3.`
+[2026-01-01 14:52:46.011] Thread-9: 40.88% done, 150,000,000 attempts, 1653713/sec, current: M5kls
+[2026-01-01 14:52:46.036] Thread-2: 40.88% done, 150,000,000 attempts, 1654479/sec, current: ,?3G<
+[2026-01-01 14:52:46.087] Thread-8: 40.88% done, 150,000,000 attempts, 1651255/sec, current: HQ~Z(
+[2026-01-01 14:52:46.141] Thread-3: 40.88% done, 150,000,000 attempts, 1652510/sec, current: 1"~Z)
+[2026-01-01 14:52:56.337] Thread-1: 54.50% done, 200,000,000 attempts, 1636179/sec, current: (9XsD
+[2026-01-01 14:52:58.749] Thread-4: 81.75% done, 300,000,000 attempts, 3257329/sec, current: 7]EmV
+[2026-01-01 14:52:58.773] Thread-5: 81.75% done, 300,000,000 attempts, 3244225/sec, current: <A3"C
+[2026-01-01 14:53:03.975] Thread-6: 54.50% done, 200,000,000 attempts, 1628983/sec, current: ?hXsD
+[2026-01-01 14:53:07.808] Thread-7: 54.50% done, 200,000,000 attempts, 1632387/sec, current: DLF(1
+[2026-01-01 14:53:08.288] Thread-0: 54.50% done, 200,000,000 attempts, 1624801/sec, current: #Uk`V
+[2026-01-01 14:53:13.989] Thread-4: 95.38% done, 350,000,000 attempts, 3281055/sec, current: 8;XNL
+[2026-01-01 14:53:14.010] Thread-5: 95.38% done, 350,000,000 attempts, 3281486/sec, current: <}Ea9
+[2026-01-01 14:53:16.407] Thread-9: 54.50% done, 200,000,000 attempts, 1645007/sec, current: Mq~Mi
+[2026-01-01 14:53:16.472] Thread-8: 54.50% done, 200,000,000 attempts, 1645549/sec, current: I03:|
+[2026-01-01 14:53:16.509] Thread-2: 54.50% done, 200,000,000 attempts, 1641282/sec, current: ,{F(2
+[2026-01-01 14:53:16.529] Thread-3: 54.50% done, 200,000,000 attempts, 1645495/sec, current: 1_3:}
+[2026-01-01 14:53:19.167] Thread-4 STOPPED - Range exhausted, not found
+[2026-01-01 14:53:19.222] Thread-5 STOPPED - Range exhausted, not found
+[2026-01-01 14:53:23.390] Thread-1: 68.13% done, 250,000,000 attempts, 1848224/sec, current: (ukT:
+[2026-01-01 14:53:27.145] Thread-6: 68.13% done, 250,000,000 attempts, 2157963/sec, current: @FkT:
+[2026-01-01 14:53:29.075] Thread-7: 68.13% done, 250,000,000 attempts, 2350950/sec, current: E*Xg'
+[2026-01-01 14:53:29.329] Thread-0: 68.13% done, 250,000,000 attempts, 2376313/sec, current: $3~AL
+[2026-01-01 14:53:35.412] Stopping all worker threads...
+[2026-01-01 14:53:35.413] Thread-0 STOPPED - Stopped by coordinator
+[2026-01-01 14:53:35.413] Thread-9 STOPPED - Stopped by coordinator
+[2026-01-01 14:53:35.413] Thread-8 STOPPED - Stopped by coordinator
+[2026-01-01 14:53:35.414] Thread-1 STOPPED - Stopped by coordinator
+[2026-01-01 14:53:35.414] Thread-7 STOPPED - Stopped by coordinator
+[2026-01-01 14:53:35.414] Thread-6 STOPPED - Stopped by coordinator
+[2026-01-01 14:53:35.414] Thread-3 STOPPED - Stopped by coordinator
+[2026-01-01 14:53:35.415] ========================================
+[2026-01-01 14:53:35.415] PASSWORD FOUND!
+[2026-01-01 14:53:35.415] Found by: Thread-2
+[2026-01-01 14:53:35.416] Password: -BKPJ
+[2026-01-01 14:53:35.417] Time taken: 138728 ms
+[2026-01-01 14:53:35.418] ========================================
+[2026-01-01 14:53:35.418] Search completed: SearchResult[FOUND: '-BKPJ' by Server_1 Thread-2 in 138744ms]
+[2026-01-01 14:53:35.424] Stop search requested
+[2026-01-01 14:53:35.424] Stopping all worker threads...
