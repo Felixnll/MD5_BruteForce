@@ -14,6 +14,8 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.CompletionService;
 
 /**
  * BruteForceClient - Command-line client for distributed MD5 brute-force
@@ -342,7 +344,8 @@ public class BruteForceClient {
         long startTime = System.currentTimeMillis();
         executor = Executors.newFixedThreadPool(numServers);
         
-        List<Future<SearchResult>> futures = new ArrayList<>();
+        // Use CompletionService to process results as they complete (first-finished, first-processed)
+        CompletionService<SearchResult> completionService = new ExecutorCompletionService<>(executor);
         
         // Submit search tasks to each server
         for (int i = 0; i < servers.size(); i++) {
@@ -357,7 +360,7 @@ public class BruteForceClient {
                     threadsPerServer
             );
             
-            Future<SearchResult> future = executor.submit(() -> {
+            completionService.submit(() -> {
                 try {
                     return server.startSearch(config);
                 } catch (Exception e) {
@@ -365,34 +368,38 @@ public class BruteForceClient {
                     return null;
                 }
             });
-            
-            futures.add(future);
         }
         
-        // Wait for results
+        // Wait for results - process whichever server finishes FIRST
         SearchResult foundResult = null;
+        int completedCount = 0;
         
         try {
-            // Shutdown executor to stop accepting new tasks
-            executor.shutdown();
-            
-            // Wait for all results or until password is found
-            for (Future<SearchResult> future : futures) {
+            // Process results as they complete (not in submission order!)
+            while (completedCount < servers.size()) {
                 try {
+                    // take() blocks until ANY server completes
+                    Future<SearchResult> future = completionService.take();
+                    completedCount++;
+                    
                     SearchResult result = future.get();
                     if (result != null && result.isFound()) {
                         foundResult = result;
-                        // Stop other servers
+                        System.out.println("\n*** PASSWORD FOUND! Stopping all servers... ***");
+                        // Stop other servers IMMEDIATELY
                         stopAllServers();
                         break;
                     }
                 } catch (Exception e) {
                     System.err.println("Error getting result: " + e.getMessage());
+                    completedCount++;
                 }
             }
             
         } catch (Exception e) {
             System.err.println("Search error: " + e.getMessage());
+        } finally {
+            executor.shutdownNow(); // Force shutdown any remaining tasks
         }
         
         long totalTime = System.currentTimeMillis() - startTime;
