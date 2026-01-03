@@ -6,16 +6,30 @@ import java.security.DigestException;
 
 /**
  * Worker thread that searches for passwords within a given range
- * Each thread gets assigned an interval to search through
+ * Each thread gets assigned a STATIC, NON-OVERLAPPING interval to search through
+ * 
+ * STATIC PARTITIONING SCHEME:
+ * - Server 1 handles first-character range [33, 80) -> '!' to 'O'
+ * - Server 2 handles first-character range [80, 127) -> 'P' to '~'
+ * - Each thread within a server gets a sub-range of first characters
+ * - Each thread searches ALL suffix combinations for its first-char range
+ * - NO shared counters, NO dynamic work stealing - fully deterministic
  */
 public class Search_Thread extends Thread{
 	
-	String interval; // the range this thread is searching
+	String interval; // the range this thread is searching (format: "start-end")
 	static int cmp = 0; // counter for thread IDs
 	int id = 0; // unique ID for this thread
 	volatile boolean stop = false; // flag to stop the thread
 	String hashcode; // target MD5 hash
 	int server; // which server this thread belongs to
+
+	// Static range boundaries parsed from interval
+	private int firstCharStart; // inclusive start of first-character range
+	private int firstCharEnd;   // exclusive end of first-character range
+
+	private static final int BASE = 94; // total printable ASCII chars (33-126)
+	private static final int BASE_OFFSET = 33; // offset for base-94 encoding
 
 	private MessageDigest md; // reusable MD5 digest instance
 	private byte[] inputBytes = new byte[6]; // buffer for password being tested
@@ -38,19 +52,22 @@ public class Search_Thread extends Thread{
 		}
 		targetDigest = hexStringToByteArray(hashcode); // convert target hash to bytes
 
-		
-		// Print debug info about this thread's assigned interval
+		// Parse the interval to get static first-character range
 		try {
 			String[] parts = interval.split("-");
-			int a = Integer.parseInt(parts[0]);
-			int b = Integer.parseInt(parts[1]);
-			char ca = (char) a; // convert to char to see what it looks like
-			char cb = (char) (b - 1);
+			firstCharStart = Integer.parseInt(parts[0]); // inclusive
+			firstCharEnd = Integer.parseInt(parts[1]);   // exclusive
+			char ca = (char) firstCharStart;
+			char cb = (char) (firstCharEnd - 1);
 			this.setName("S" + server + "-T" + id); // set thread name for debugging
-			System.out.println
-			("Thread " + id + " (Server " + server + ") assigned interval " + interval + " -> ascii [" + a + ".." + (b-1) + "] ('" + ca + "'..'" + cb + "')");
+			System.out.println("Thread " + id + " (Server " + server + ") STATIC range: first-char [" 
+				+ firstCharStart + ".." + (firstCharEnd-1) + "] ('" + ca + "'..'" + cb + "') - "
+				+ (firstCharEnd - firstCharStart) + " first-chars assigned");
 		} catch (Exception ex) {
-			// Ignore if interval format is wrong
+			// Fallback if interval format is wrong
+			firstCharStart = 33;
+			firstCharEnd = 127;
+			System.err.println("Thread " + id + " failed to parse interval: " + interval);
 		}
 	}
 
@@ -108,68 +125,75 @@ public class Search_Thread extends Thread{
 	}
 
 	// Main thread execution - search passwords of length 1 to 6
+	// Uses STATIC partitioning - each thread searches its own first-char range
 	public void run() {
 		// Try each password length from 1 to 6
 		for (int len = 1; len <= 6 && !SearchCoordinator.isFound() && !stop; len++) {
-			System.out.println("Thread " + id + " on Server " + server + " searching length " + len);
-			// Process this length using dynamic work distribution
-			processLengthDynamic(len, GlobalDistributor.START, 
-									GlobalDistributor.END, 
-									GlobalDistributor.BASE, 
-									GlobalDistributor.BASE_OFFSET, 
-									GlobalDistributor.CHUNK_SIZE, 
-									GlobalDistributor.counters, 
-									GlobalDistributor.totals);
+			long suffixCount = (len == 1) ? 1 : pow(BASE, len - 1);
+			long totalForThisThread = (long)(firstCharEnd - firstCharStart) * suffixCount;
+			System.out.println("Thread " + id + " on Server " + server + " searching length " + len 
+				+ " (static range: " + totalForThisThread + " passwords)");
+			// Process this length using STATIC work distribution (no shared counters)
+			processLengthStatic(len);
 		}
-		// System.out.println("Thread " + id + " finished all lengths"); // debug
+		if (!SearchCoordinator.isFound()) {
+			System.out.println("Thread " + id + " on Server " + server + " completed all lengths (not found in range)");
+		}
+	}
+
+	// Power function for calculating suffix combinations
+	private static long pow(int base, int exp) {
+		long r = 1L;
+		for (int i = 0; i < exp; i++) r *= base;
+		return r;
 	}
 
 	private void foundPassword(String password) {
 		SearchCoordinator.reportFound(password, id, server);
 	}
 
-	private void processLengthDynamic(int length, 
-									int serverStart, 
-									int serverEnd, 
-									int base, 
-									int baseOffset, 
-									int chunkSize, 
-									java.util.concurrent.atomic.AtomicLong[] countersArr, 
-									long[] totalsArr)
-{
-		long total = totalsArr[length];
-		if (total <= 0) return;
-
+	/**
+	 * STATIC partitioning: Process all passwords of given length where
+	 * the first character is in this thread's assigned range [firstCharStart, firstCharEnd)
+	 * 
+	 * This method searches ALL suffix combinations for each first character.
+	 * NO shared counters, NO dynamic work stealing - fully deterministic.
+	 */
+	private void processLengthStatic(int length) {
+		// Calculate how many suffix combinations exist for this length
 		long suffixTotal = 1L;
 		if (length > 1) {
-			for (int i = 0; i < length - 1; i++) suffixTotal *= base;
+			suffixTotal = pow(BASE, length - 1);
 		}
 
-		java.util.concurrent.atomic.AtomicLong counter = countersArr[length];
-		while (!SearchCoordinator.isFound() && !stop) {
-			long start = counter.getAndAdd(chunkSize);
-			if (start >= total) break;
-			long end = Math.min(start + chunkSize, total);
-			for (long idx = start; idx < end && !SearchCoordinator.isFound() && !stop; idx++) {
-				if (length == 1) {
-					int ch = serverStart + (int) idx;
-					inputBytes[0] = (byte) ch;
-				} else {
-					long firstOffset = idx / suffixTotal;
-					long suffixIdx = idx % suffixTotal;
-					inputBytes[0] = (byte) (serverStart + (int) firstOffset);
-					long rem = suffixIdx;
-					for (int pos = length - 1; pos >= 1; pos--) {
-						int digit = (int) (rem % base);
-						inputBytes[pos] = (byte) (baseOffset + digit);
-						rem /= base;
-					}
-				}
+		// Iterate through each first character in our STATIC assigned range
+		for (int firstChar = firstCharStart; firstChar < firstCharEnd && !SearchCoordinator.isFound() && !stop; firstChar++) {
+			inputBytes[0] = (byte) firstChar;
 
-				if (md5Matches(length)) {
-					String pwd = new String(inputBytes, 0, length);
+			if (length == 1) {
+				// Only first character, check immediately
+				if (md5Matches(1)) {
+					String pwd = new String(inputBytes, 0, 1);
 					foundPassword(pwd);
 					return;
+				}
+			} else {
+				// Iterate through ALL suffix combinations for this first character
+				// This is the key to static partitioning - each thread handles its own suffixes
+				for (long suffixIdx = 0; suffixIdx < suffixTotal && !SearchCoordinator.isFound() && !stop; suffixIdx++) {
+					// Convert suffixIdx to characters using base-94 encoding
+					long rem = suffixIdx;
+					for (int pos = length - 1; pos >= 1; pos--) {
+						int digit = (int) (rem % BASE);
+						inputBytes[pos] = (byte) (BASE_OFFSET + digit);
+						rem /= BASE;
+					}
+
+					if (md5Matches(length)) {
+						String pwd = new String(inputBytes, 0, length);
+						foundPassword(pwd);
+						return;
+					}
 				}
 			}
 		}

@@ -2,25 +2,26 @@ package MD5_BruteForce;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Server2 handles the second half of ASCII range (80-126)
- * Similar to Server1 but different range
+ * Works together with Server1 to split the workload
+ * 
+ * STATIC PARTITIONING:
+ * - Server2 owns first-character range [80, 127) = 47 chars ('P' to '~')
+ * - Each thread within Server2 gets a non-overlapping sub-range
+ * - Threads search ALL suffix combinations for their assigned first-chars
+ * - NO overlap with Server1 (which handles [33, 80))
  */
 public class Server2 {
 
 	// Keep track of all threads for this server
 	static List<Search_Thread> threads = new ArrayList<Search_Thread>();
 
-	// Server2's ASCII range: P through ~ (tilde)
-	public static final int START = 80; // 'P'
-	public static final int END = 127; // DEL (exclusive)
+	// Server2's ASCII range: P through ~ (STATIC, NON-OVERLAPPING with Server1)
+	public static final int START = 80; // 'P' - inclusive (Server1 ends here)
+	public static final int END = 127; // DEL - exclusive
 	public static final int BASE = 94; // same base for calculation purposes
-	public static final int BASE_OFFSET = 33; // offset for base-94 encoding
-	public static final int CHUNK_SIZE = 1024;
-	public static AtomicLong[] counters = new AtomicLong[7]; 
-	public static long[] totals = new long[7];
 	
 	
 	// Initialize and launch all threads
@@ -44,23 +45,14 @@ public class Server2 {
 	}
 	
 	// Start Server2 with the specified number of threads
+	// Uses STATIC PARTITIONING - divides first-char range among threads
 	public static void start_server(String hashcode,int n) {
-		// System.out.println("Server 2 starting with " + n + " threads"); // debug
+		System.out.println("Server 2 starting with " + n + " thread(s)...");
+		System.out.println("Server 2 range: [" + START + ", " + END + ") -> '" + (char)START + "' to '" + (char)(END-1) + "'");
 		threads.clear(); // remove old threads
-		// Calculate how many passwords this server needs to check
-		int range = END - START;
-		// Setup totals and counters for each length
-		for (int len = 1; len <= 6; len++) {
-			if (len == 1) {
-				totals[len] = range;
-			} else {
-				// range * BASE^(len-1)
-				long suffix = pow(BASE, len - 1);
-				totals[len] = range * suffix;
-			}
-			counters[len] = new AtomicLong(0L); // start from 0
-		}
-		// Calculate intervals and start threads
+		
+		// STATIC PARTITIONING: Divide first-char range among n threads
+		// Each thread gets a non-overlapping sub-range of first characters
 		List<String> intervals = intervals(n);
 		start_threads(hashcode,intervals);
 	}
@@ -94,12 +86,4 @@ public class Server2 {
 		
 		return inter;
 	}
-
-	// Power function (same as Server1)
-	private static long pow(int base, int exp) {
-		long r = 1L;
-		for (int i = 0; i < exp; i++) r *= base;
-		return r;
-	}
 }
-

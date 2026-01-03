@@ -78,8 +78,17 @@ public class Main_Server {
 
 			// Reset everything before starting new search
 			SearchCoordinator.reset();
-			GlobalDistributor.init();
+			// Reset thread ID counter for clean thread numbering
+			Search_Thread.cmp = 0;
 			SearchCoordinator.setStartTime(System.nanoTime()); // track start time for performance
+
+			// Print static partitioning info
+			System.out.println("=== STATIC PARTITIONING SCHEME ===");
+			System.out.println("Server 1: first-char range [33, 80) -> '!' to 'O' (" + (80-33) + " chars)");
+			System.out.println("Server 2: first-char range [80, 127) -> 'P' to '~' (" + (127-80) + " chars)");
+			System.out.println("Each thread gets a non-overlapping sub-range of first characters");
+			System.out.println("==================================");
+			System.out.println();
 
 			// Start both servers
 			Server1.start_server(hashcode, threadsServer1);

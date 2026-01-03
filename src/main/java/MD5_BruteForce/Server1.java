@@ -2,24 +2,25 @@ package MD5_BruteForce;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Server1 handles the first half of the ASCII range (33-79)
  * Works together with Server2 to split the workload
+ * 
+ * STATIC PARTITIONING:
+ * - Server1 owns first-character range [33, 80) = 47 chars ('!' to 'O')
+ * - Each thread within Server1 gets a non-overlapping sub-range
+ * - Threads search ALL suffix combinations for their assigned first-chars
+ * - NO overlap with Server2 (which handles [80, 127))
  */
 public class Server1 {
 	// List to keep track of all threads created by this server
 	static List<Search_Thread> threads = new ArrayList<Search_Thread>();
 
-	// ASCII range for Server1: ! through O
-	public static final int START = 33; // '!'
-	public static final int END = 80; // 'P' (exclusive)
+	// ASCII range for Server1: ! through O (STATIC, NON-OVERLAPPING with Server2)
+	public static final int START = 33; // '!' - inclusive
+	public static final int END = 80; // 'P' - exclusive (Server2 starts here)
 	public static final int BASE = 94; // total characters across both servers
-	public static final int BASE_OFFSET = 33;
-	public static final int CHUNK_SIZE = 1024; // passwords per work chunk
-	public static AtomicLong[] counters = new AtomicLong[7]; // one for each length
-	public static long[] totals = new long[7]; // total combinations per length
 	
 	// Create and start all threads for this server
 	public static void start_threads(String hashcode,List<String> ints) {
@@ -42,23 +43,14 @@ public class Server1 {
 	}
 	
 	// Main entry point to start Server1 with n threads
+	// Uses STATIC PARTITIONING - divides first-char range among threads
 	public static void start_server(String hashcode,int n) {
-		System.out.println("Server 1 starting..."); // changed from "Server Start" for clarity
+		System.out.println("Server 1 starting with " + n + " thread(s)...");
+		System.out.println("Server 1 range: [" + START + ", " + END + ") -> '" + (char)START + "' to '" + (char)(END-1) + "'");
 		threads.clear(); // clear any old threads from previous runs
-		// Calculate search space for this server's range
-		int range = END - START; // how many first chars this server handles
-		// Pre-calculate totals for each password length
-		for (int len = 1; len <= 6; len++) {
-			if (len == 1) {
-				totals[len] = range; // just first character
-			} else {
-				// For multi-char passwords: first_char_range * (all_chars ^ remaining_positions)
-				long suffix = pow(BASE, len - 1);
-				totals[len] = range * suffix;
-			}
-			counters[len] = new AtomicLong(0L); // reset counter
-		}
-		// Divide work among n threads and start them
+		
+		// STATIC PARTITIONING: Divide first-char range among n threads
+		// Each thread gets a non-overlapping sub-range of first characters
 		List<String> intervals = intervals(n);
 		start_threads(hashcode,intervals);
 	}
@@ -95,12 +87,4 @@ public class Server1 {
 		
 		return inter;
 	}
-
-	// Helper: calculate base^exp (couldn't use Math.pow since it returns double)
-	private static long pow(int base, int exp) {
-		long r = 1L;
-		for (int i = 0; i < exp; i++) r *= base; // simple iterative power
-		return r;
-	}
 }
-
